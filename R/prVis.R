@@ -27,6 +27,8 @@
 #    nSubSam:  number of rows to randomly select; 0 means get all
 #    nIntervals: in regression case, number of intervals to use for
 #                partioning Y range to create labels
+#    pcaMethod: specify how eigenvectors will be calculated, using
+#               prcomp or RSpectra
 #    saveOutputs: if TRUE, return list with gpOut = output of getPoly(), 
 #                 prout = output of prcomp()
 #    cex: argument to R plot(), controlling point size
@@ -75,7 +77,7 @@ prVis <- function(xy,labels=FALSE,deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
     x.cov <- cov(polyMat)
     x.eig <- eigs(x.cov,2)
     x.pca <- x.eig
-    xdata <- as.matrix(polyMat) %*% xy.eig$vectors[,1:2]
+    xdata <- as.matrix(polyMat) %*% x.eig$vectors[,1:2]
   }
 
   if (labels)  {
