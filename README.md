@@ -16,17 +16,15 @@ sw <- read.table('Surendran.txt',header=T)
 # So it is a classification problem! In this case,
 # we need to transform the last column to an R factor
 sw[,4] <- as.factor(sw[,4])
-
 # We "forget" the labels for each row by excluding the label columnm and plot it "
 prVis(sw[,-4],labels=F)
-
+![](https://github.com/matloff/prVis/blob/Readme/inst/data/SwissRoll/SWwithnoY.png)
 # It suggests 4 layers of data, which indicates 4 different components in the graph below
-![]()
+
 # And we now "unforget" the lables by including them into the data set and
 # plot it to see how many componentsa(labels) are actually in the data set
-# And yeah, the result (indicated by the different colorings) corresponds
-# to our prediction before
+# And yeah, the result (indicated by the different colorings) corresponds to our prediction before
 prVis(sw,labels=T)
-![]()
+![](https://github.com/matloff/prVis/blob/Readme/inst/data/SwissRoll/SWwithY.png)
 ```
 *Example:* to be added
