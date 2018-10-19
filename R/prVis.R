@@ -71,7 +71,7 @@ prVis <- function(xy,labels=FALSE,deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
     x.pca <- prcomp(polyMat,center=TRUE)
   } else {
     require(RSpectra)
-    x.cov <- cov(x)
+    x.cov <- cov(polyMat)
     x.eig <- eigs(x.cov,2)
     x.pca <- x.eig
   }
