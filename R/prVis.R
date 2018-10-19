@@ -69,16 +69,18 @@ prVis <- function(xy,labels=FALSE,deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
   polyMat <- getPoly(xdata, deg)$xdata
   if (pcaMethod == "prcomp") {
     x.pca <- prcomp(polyMat,center=TRUE)
+    xdata <- x.pca$x[,1:2]
   } else {
     require(RSpectra)
     x.cov <- cov(polyMat)
     x.eig <- eigs(x.cov,2)
     x.pca <- x.eig
+    xdata <- as.matrix(polyMat) %*% xy.eig$vectors[,1:2]
   }
 
   if (labels)  {
-     plot(x.pca$x[,1:2], col=ydata, pch=15, cex=0.5) 
-   } else plot(x.pca$x[,1:2], pch=15, cex=0.5)
+     plot(xdata, col=ydata, pch=15, cex=0.5) 
+   } else plot(xdata, pch=15, cex=0.5)
   
   if (saveOutputs) 
      return(list(gpOut=polyMat,prout=x.pca))
