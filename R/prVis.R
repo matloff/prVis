@@ -32,8 +32,12 @@
 #    cex: argument to R plot(), controlling point size
 
 prVis <- function(xy,labels=FALSE,deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
-   saveOutputs=FALSE,cex=0.5)
+   pcaMethod="prcomp",saveOutputs=FALSE,cex=0.5)
 {  
+  # safety check
+  if (!pcaMethod %in% c('prcomp','RSpectra'))
+    stop("pcaMethod should be either NULL, prcomp, or RSpectra")
+
   nrxy <- nrow(xy)
   ncxy <- ncol(xy)
 
@@ -63,7 +67,15 @@ prVis <- function(xy,labels=FALSE,deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
 
   xdata <- as.matrix(xdata)
   polyMat <- getPoly(xdata, deg)$xdata
-  x.pca <- prcomp(polyMat,center=TRUE)
+  if (pcaMethod == "prcomp") {
+    x.pca <- prcomp(polyMat,center=TRUE)
+  } else {
+    require(RSpectra)
+    x.cov <- cov(x)
+    x.eig <- eigs(x.cov,2)
+    x.pca <- x.eig
+  }
+
   if (labels)  {
      plot(x.pca$x[,1:2], col=ydata, pch=15, cex=0.5) 
    } else plot(x.pca$x[,1:2], pch=15, cex=0.5)
