@@ -20,15 +20,14 @@ sw[,4] <- as.factor(sw[,4])
 prVis(sw[,-4],labels=F)
 ```
 ![](https://github.com/matloff/prVis/blob/Readme/inst/data/SwissRoll/SWwithnoY.png)
-```r
-#It suggests 4 layers of data, which indicates 4 different components in the graph below
+It suggests 4 layers of data, which indicates 4 different components in the graph above
 
+```r
 # And we now "unforget" the lables by including them into the data set and
 # plot it to see how many componentsa(labels) are actually in the data set
 prVis(sw,labels=T)
 ```
 ![](https://github.com/matloff/prVis/blob/Readme/inst/data/SwissRoll/SWwithY.png)
-```r
-# And yeah, the result (indicated by the different colorings) corresponds to our prediction before
-```
+And yeah, the result (indicated by the different colorings) corresponds to our prediction before
+
 *Example:* to be added
