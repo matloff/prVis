@@ -78,7 +78,7 @@ prVis <- function(xy,labels=FALSE,deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
     x.eig <- eigs(x.cov,2)
     x.pca <- x.eig
     xdata <- as.matrix(polyMat) %*% x.eig$vectors[,1:2]
-    colnames(xdata) <- c("PCA1","PCA2")
+    colnames(xdata) <- c("PC1","PC2")
   }
 
   if (labels)  {
