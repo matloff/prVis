@@ -83,4 +83,4 @@ pe1[14922,]
 #     occ2 occ3 occ4 occ5
 #14922   0    1    0    0
 ```
-Yeah! The streaks do reveal some patterns: except for age, these two workers share the same occupational type (occ3), same gender, and same education level. Each one streak represents a certain combination of categorical variables!
+Yeah! The streaks do reveal some patterns: except for age, these two workers share the same occupational type (occ3), same gender, and same education level. The insight we get from this visulaization is that each streak may represent a certain combination of categorical variables!
