@@ -33,4 +33,13 @@ prVis(sw,labels=T)
 And yeah, the result (indicated by the different colorings) corresponds to our prediction before
 ```
 
-*Example:* to be added
+*Example:* Programmer/engineer 2000 Census data, Silicon Valley.
+Built into [the **regtools** package](https://github.com/matloff/regtools). Install package or download directly [here](https://raw.githubusercontent.com/matloff/regtools/master/data/prgeng.txt). In the former case, getPE() reads in the dataset and does some preprocessing, producing a data frame named **pe**.
+```r
+getPE() # get the dataset
+# Choose some of the variables: age, gender, education level, and occupation
+pe1 <-[, c(1,2,6,7, 12:16)]
+#plot the graph, and save the output to z for later use
+z  = prVis(pe1, saveOutputs = T)
+#The plot below consists about a dozen of separated streaks, making us wonder why that happens (Note: the data set is not artificial, we do not know any grouping before hand)
+```
