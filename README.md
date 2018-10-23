@@ -10,11 +10,10 @@ The main function in this package is prVis(), which provides a two dimensional v
 *Example:* Swiss Roll data derived from [Dinoj Surendran's site](http://people.cs.uchicago.edu/~dinoj/manifold/swissroll.html). The preprocessed data can be downloaded [here](https://github.com/matloff/prVis/tree/master/inst/data/SwissRoll)
 
 ``` r
-# swiss roll data has 4 columns, 1600 rows
+# Read in the data
 sw <- read.table('Surendran.txt',header=T)
 # The last column of the original data is the "label" column.
-# So it is a classification problem! In this case,
-# we need to transform the last column to an R factor
+# In this case, we need to transform the last column to an R factor
 sw[,4] <- as.factor(sw[,4])
 # We "forget" the labels for each row by excluding the label columnm and plot it "
 prVis(sw[,-4],labels=F)
@@ -25,7 +24,7 @@ prVis(sw[,-4],labels=F)
 ```
 ```r
 # And we now "unforget" the lables by including them into the data set and
-# plot it to see how many componentsa(labels) are actually in the data set
+# plot it to see how many components(labels) are actually in the data set
 prVis(sw,labels=T)
 ```
 ![](https://github.com/matloff/prVis/blob/Readme/inst/data/SwissRoll/SWwithY.png)
