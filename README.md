@@ -69,6 +69,7 @@ addRowNums(16,z)
 [1] 18066
 ```
 ![](https://github.com/matloff/prVis/blob/Readme/inst/data/PE/peNum.png)
+
 The plot above, along with the output row numbers, shows that rows 7183 and 14922 seem to be on the same streak, Let's dive in to it.
 ```r
 pe1[7183,]
@@ -82,4 +83,4 @@ pe1[14922,]
 #     occ2 occ3 occ4 occ5
 #14922   0    1    0    0
 ```
-Yeah! The streaks do reveal some patterns: these two workers share the same occupational type (occ3), same gender, and same education level, except for age. Each one streak represents a certain combination of categorical variables! 
+Yeah! The streaks do reveal some patterns: these two workers share the same occupational type (occ3), same gender, and same education level, except for age. Each one streak represents a certain combination of categorical variables!
