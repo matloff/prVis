@@ -87,7 +87,7 @@ prVis <- function(xy,labels=FALSE,deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
     xdataCov <- var(xdata)
     distances <- mahalanobis(xdata,colMeans(xdata),xdataCov)
     sortedDistances <- sort(distances, decreasing=TRUE)
-    outliers <- sortedDistances[1:outliersToRemove]
+    outliers <- names(sortedDistances)[1:outliersToRemove]
     xdata <- xdata[!rownames(xdata) %in% outliers,]
   }
 
