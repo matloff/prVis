@@ -107,7 +107,7 @@ prVis <- function(xy,labels=FALSE,deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
   } else plot(xdata, pch=15, cex=0.5)
   if (saveOutputs) 
     return(list(gpOut=polyMat,prout=x.pca))
-  
+  }
 }
 
 # intended to be used when a plot produced by prVis() is on the screen;
