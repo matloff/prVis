@@ -99,8 +99,9 @@ prVis <- function(xy,labels=FALSE,deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
     require(ggplot2)
     if (labels)  {
       x <-  qplot(xdata, col=ydata, pch=15, cex=0.5) 
+      print(x)
     } else x<- qplot(xdata, pch=15, cex=0.5)
-    x + geom_point(alpha = alpha)
+    print(x + geom_point(alpha = alpha))
   } else {
   if (labels)  {
     plot(xdata, col=ydata, pch=15, cex=0.5) 
