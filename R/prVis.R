@@ -27,6 +27,8 @@
 #    nSubSam:  number of rows to randomly select; 0 means get all
 #    nIntervals: in regression case, number of intervals to use for
 #                partioning Y range to create labels
+#    outliersRemoved: specify how many outliers to remove from
+#                     the plot, calculated using mahalanobis distance
 #    pcaMethod: specify how eigenvectors will be calculated, using
 #               prcomp or RSpectra
 #    saveOutputs: if TRUE, return list with gpOut = output of getPoly(), 
@@ -34,7 +36,7 @@
 #    cex: argument to R plot(), controlling point size
 
 prVis <- function(xy,labels=FALSE,deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
-   pcaMethod="prcomp",saveOutputs=FALSE,cex=0.5)
+   outliersRemoved=0,pcaMethod="prcomp",saveOutputs=FALSE,cex=0.5)
 {  
   # safety check
   if (!pcaMethod %in% c('prcomp','RSpectra'))
@@ -81,6 +83,19 @@ prVis <- function(xy,labels=FALSE,deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
     colnames(xdata) <- c("PC1","PC2")
   }
 
+  if (outliersRemoved > 0 && outliersRemoved <= nrow(xdata)){
+    # calculate mahalanobis distances for each data point
+    xdataCov <- var(xdata)
+    distances <- mahalanobis(xdata,colMeans(xdata),xdataCov)
+    # find which row the max distances correspond to
+    rownames(xdata) <- 1:nrow(xdata)
+    names(distances) <- rownames(xdata)
+    sortedDistances <- sort(distances, decreasing=TRUE)
+    outliers <- names(sortedDistances)[1:outliersRemoved]
+    # remove outliers
+    xdata <- xdata[!rownames(xdata) %in% outliers,]
+  }
+
   if (labels)  {
      plot(xdata, col=ydata, pch=15, cex=0.5) 
    } else plot(xdata, pch=15, cex=0.5)
@@ -112,4 +127,3 @@ addRowNums <- function(np,savedPrVisOut)
       text(coords[1],coords[2],rn)
    }
 }
-
