@@ -4,7 +4,7 @@ The graphs in this directory are of [banknote authentication](https://archive.ic
 ## Graphs
 
 ### prVis graphs
-![prVis without labels](https://github.com/matloff/prVis/gallery/banknote_authentication/prVis_banknote_authentication.png  "prVis without labels")
+![prVis without labels](https://github.com/matloff/prVis/raw/gallery/banknote_authentication/prVis_banknote_authentication.png  "prVis without labels")
 
 ![prVis with labels](https://github.com/matloff/prVis/gallery/banknote_authentication/prVis_labels_banknote_authentication.png  "prVis with labels")
 
