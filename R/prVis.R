@@ -98,10 +98,11 @@ prVis <- function(xy,labels=FALSE,deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
   if (alpha) {
     require(ggplot2)
     if (labels)  {
-      x <-  qplot(x=xdata[,1],y=xdata[,2],alpha=alpha,col=ydata,size=I(cex)) 
+      plotObject <-  qplot(x=xdata[,1],y=xdata[,2],alpha=alpha,col=ydata,size=I(cex)) 
     } else {
-      x<- qplot(x=xdata[,1],y=xdata[,2],alpha=alpha,size=I(cex))
+      plotObject <- qplot(x=xdata[,1],y=xdata[,2],alpha=alpha,size=I(cex))
     }
+    plotObject + labs(x="PC1",y="PC2")
     print(x)
   } else {
   if (labels)  {
