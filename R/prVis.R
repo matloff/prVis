@@ -98,15 +98,15 @@ prVis <- function(xy,labels=FALSE,deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
   if (alpha) {
     require(ggplot2)
     if (labels)  {
-      x <-  qplot(x=xdata[,1],y=xdata[,2],alpha=alpha,col=ydata,cex=0.15) 
+      x <-  qplot(x=xdata[,1],y=xdata[,2],alpha=alpha,col=ydata,size=I(cex)) 
     } else {
-      x<- qplot(x=xdata[,1],y=xdata[,2],alpha=alpha,cex=0.5)
+      x<- qplot(x=xdata[,1],y=xdata[,2],alpha=alpha,size=I(cex))
     }
     print(x)
   } else {
   if (labels)  {
-    plot(xdata, col=ydata, pch=15, cex=0.5) 
-  } else plot(xdata, pch=15, cex=0.5)
+    plot(xdata, col=ydata, pch=15, cex=cex) 
+  } else plot(xdata, pch=15, cex=cex)
   if (saveOutputs) 
     return(list(gpOut=polyMat,prout=x.pca))
   }
