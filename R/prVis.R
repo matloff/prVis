@@ -102,7 +102,7 @@ prVis <- function(xy,labels=FALSE,deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
     } else {
       plotObject <- qplot(x=xdata[,1],y=xdata[,2],xlab="PC1",ylab="PC2",alpha=alpha,size=I(cex))
     }
-    print(x)
+    print(plotObject)
   } else {
   if (labels)  {
     plot(xdata, col=ydata, pch=15, cex=cex) 
