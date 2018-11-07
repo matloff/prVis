@@ -2,7 +2,10 @@ Package: prVis
 Title: Polynomial-Based Visualization 
 Version: 0.0.1
 Authors@R: c(person("Norman", "Matloff", email = "matloff@cs.ucdavis.edu", role = c("aut", "cre")),
-           person("Robin", "Yancey", email = "reyancey@ucdavis.edu", role = c("aut")) 
+           person("Robin", "Yancey", email = "reyancey@ucdavis.edu", role = c("aut")),
+           person("Wenxuan", "Zhao", email = "awxzhao@ucdavis.edu", role = c("aut")),
+           person("Tiffany", "Jiang", email = "thjiang@ucdavis.edu", role = c("aut")),
+           person("Robert", "Tucker", email = "ratucker@ucdavis.edu", role = c("aut"))
            )
 Description: Polynomial-based alternative to t-SNE and UMAP
 Depends: polyreg

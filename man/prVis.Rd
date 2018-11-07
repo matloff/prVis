@@ -9,7 +9,8 @@ Polynomial-based alternative to t-SNE, UMAP etc.}
 
 \usage{
 prVis(xy, labels = FALSE, deg = 2, scale = FALSE, nSubSam = 0, 
-    nIntervals = NULL, saveOutputs = FALSE, cex = 0.5)
+    nIntervals = NULL, outliersRemoved = 0, pcaMethod = "prcomp", 
+    saveOutputs = FALSE, cex = 0.5)
 addRowNums(np, savedPrVisOut) 
 }
 
@@ -23,6 +24,8 @@ addRowNums(np, savedPrVisOut)
      use the full dataset.} 
   \item{nIntervals}{If labels column is continuous, discretize into this
      many levels.}
+  \item{outliersRemoved}{Specify how many outliers to remove from the plot, calculated using mahalanobis distance.}
+  \item{pcaMethod}{Specify how eigenvectors will be calculated, using prcomp or RSpectra}
   \item{saveOutputs}{Save outputs for use in \code{addRowNums}.}
   \item{cex}{Point size for plot.}
   \item{np}{Number of points to label in plot.}
