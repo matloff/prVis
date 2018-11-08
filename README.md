@@ -7,7 +7,7 @@ A simpler, equally effective alternative visulaization tool to various non-linea
 **Usage:**
 The main function in this package is prVis(), which provides a two dimensional visualization of the X data in classification problems. Users have the option to display the color coded labels (Y, and it can be both in regression cases and in classification cases.)
 
-*Example:* Swiss Roll data derived from [Dinoj Surendran's site](http://people.cs.uchicago.edu/~dinoj/manifold/swissroll.html). The preprocessed data can be downloaded [here](https://github.com/matloff/prVis/tree/master/inst/data/SwissRoll)
+*Example:* Swiss Roll data derived from [Dinoj Surendran's site](http://people.cs.uchicago.edu/~dinoj/manifold/swissroll.html). The preprocessed data can be downloaded [here](https://github.com/matloff/prVis/blob/master/inst/data/SwissRoll/Surendran.txt)
 
 ``` r
 # Read in the data
@@ -18,16 +18,16 @@ sw[,4] <- as.factor(sw[,4])
 # We "forget" the labels for each row by excluding the label columnm and plot it "
 prVis(sw[,-4],labels=F)
 ```
-![](https://github.com/matloff/prVis/blob/Readme/inst/data/SwissRoll/SWwithnoY.png)
+![](https://github.com/matloff/prVis/blob/master/inst/data/SwissRoll/SWwithnoY.png)
 ```r
-#In the above plot, it suggests 4 layers of data, which may indicate 4 different components
+#In the above plot, it suggests 4 different components
 ```
 ```r
 # And we now "unforget" the lables by including them into the data set and
 # plot it to see how many components(labels) are actually in the data set
 prVis(sw,labels=T)
 ```
-![](https://github.com/matloff/prVis/blob/Readme/inst/data/SwissRoll/SWwithY.png)
+![](https://github.com/matloff/prVis/blob/master/inst/data/SwissRoll/SWwithY.png)
 ```r
 And yeah, the result (indicated by the different colorings) corresponds to our prediction before
 ```
@@ -43,7 +43,7 @@ z  = prVis(pe1, saveOutputs = T)
 axis(side=1)
 # The plot below consists about a dozen of separated streaks, making us wonder why that happens (Note: the data set is not artificial, we do not know any grouping before hand)
 ```
-![](https://github.com/matloff/prVis/blob/Readme/inst/data/PE/pe.png)
+![](https://github.com/matloff/prVis/blob/master/inst/data/PE/pe.png)
 ```r
 # To investigate that question, we call another utility function in the package:
 addRowNums(16,z)
@@ -67,7 +67,7 @@ addRowNums(16,z)
 [1] 17831
 [1] 18066
 ```
-![](https://github.com/matloff/prVis/blob/Readme/inst/data/PE/peNum.png)
+![](https://github.com/matloff/prVis/blob/master/inst/data/PE/peNum.png)
 
 The plot above, along with the output row numbers, shows that rows 7183 and 14922 seem to be on the same streak.
 Let's dive in to it.
@@ -84,3 +84,10 @@ pe1[14922,]
 #14922   0    1    0    0
 ```
 Yeah! The streaks do reveal some patterns: except for age, these two workers share the same occupational type (occ3), same gender, and same education level. The insight we get from this visulaization is that each streak may represent a certain combination of categorical variables!
+
+**Options**
+*(1)* RSpectra extension: We give user an option to use RSpectra (require package RSpectra) method to do PCA (Principal Component Analysis), instead of using prcomp. We are expecting a speed up by doing so.
+Default: pcaMethod="prcomp"
+*(2)* Outlier removal: We provide user the option to specify the number of outliers to be removed from the output graph. (mahalanobis distance for now)
+Default: outliersRemoved=0
+*(3)* Alpha Blending: User can specify the alpha blending value (require package ggplot2). 
