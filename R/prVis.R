@@ -88,21 +88,24 @@ prVis <- function(xy,labels=FALSE,deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
     distances <- mahalanobis(xdata,colMeans(xdata),xdataCov)
     # find which row the max distances correspond to
     rownames(xdata) <- 1:nrow(xdata)
+    names(ydata) <- 1:nrow(xdata)
     names(distances) <- rownames(xdata)
     sortedDistances <- sort(distances, decreasing=TRUE)
     outliers <- names(sortedDistances)[1:outliersRemoved]
     # remove outliers
     xdata <- xdata[!rownames(xdata) %in% outliers,]
+    ydata <- ydata[!names(ydata) %in% outliers]
   }
 
   if (alpha) {
     require(ggplot2)
     if (labels)  {
-      x <-  qplot(x=xdata[,1],y=xdata[,2],alpha=alpha,col=ydata,size=I(cex)) 
+      plotObject <-  qplot(x=xdata[,1],y=xdata[,2],xlab="PC1",ylab="PC2",alpha=alpha,col=ydata,size=I(cex)) 
     } else {
-      x<- qplot(x=xdata[,1],y=xdata[,2],alpha=alpha,size=I(cex))
+      plotObject <- qplot(x=xdata[,1],y=xdata[,2],xlab="PC1",ylab="PC2",alpha=alpha,size=I(cex))
     }
-    print(x)
+    print(plotObject)
+
   } else {
   if (labels)  {
     plot(xdata, col=ydata, pch=15, cex=cex) 
