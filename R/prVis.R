@@ -34,7 +34,7 @@
 #                 prout = output of prcomp()
 #    cex: argument to R plot(), controlling point size
 
-prVis <- function(xy,labels=FALSE,labelColumn = ncol (xy), deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
+prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
    outliersRemoved=0,pcaMethod="prcomp",saveOutputs=FALSE,cex=0.5, alpha=0)
 {
   # safety check
@@ -44,13 +44,12 @@ prVis <- function(xy,labels=FALSE,labelColumn = ncol (xy), deg=2,scale=FALSE,nSu
   nrxy <- nrow(xy)
   ncxy <- ncol(xy)
   if (labels) {
-    if (labelColumn > ncol(xy) || labelColumn <= 0)
-      stop("The column specified is out of range ")
+    if (yColumn > ncol(xy) || yColumn <= 0)
+      stop("The column specified is out of range")
     tmp <- xy[, ncxy]
-    xy[, ncxy] <- xy[, labelColumn]
-    xy[, labelColumn] <- tmp # swapping the last column with the user-specified column
-    if (nIntervals == NULL)
-      xy[, ncxy] <- as.factor(xy[, ncxy])
+    xy[, ncxy] <- xy[, yColumn]
+    xy[, yColumn] <- tmp # swapping the last column with the user-specified column
+
   }
   rns <- row.names(xy)
   if (scale) {
