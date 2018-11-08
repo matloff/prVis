@@ -93,6 +93,7 @@ prVis <- function(xy,labels=FALSE,deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
     outliers <- names(sortedDistances)[1:outliersRemoved]
     # remove outliers
     xdata <- xdata[!rownames(xdata) %in% outliers,]
+    ydata <- ydata[!rownames(xdata) %in% outliers,]
   }
 
   if (alpha) {
