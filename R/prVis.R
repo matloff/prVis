@@ -30,20 +30,28 @@
 #                     the plot, calculated using mahalanobis distance
 #    pcaMethod: specify how eigenvectors will be calculated, using
 #               prcomp or RSpectra
-#    saveOutputs: if TRUE, return list with gpOut = output of getPoly(), 
+#    saveOutputs: if TRUE, return list with gpOut = output of getPoly(),
 #                 prout = output of prcomp()
 #    cex: argument to R plot(), controlling point size
 
-prVis <- function(xy,labels=FALSE,deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
+prVis <- function(xy,labels=FALSE,labelColumn = ncol (xy), deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
    outliersRemoved=0,pcaMethod="prcomp",saveOutputs=FALSE,cex=0.5, alpha=0)
-{  
+{
   # safety check
   if (!pcaMethod %in% c('prcomp','RSpectra'))
     stop("pcaMethod should be either NULL, prcomp, or RSpectra")
-  
+
   nrxy <- nrow(xy)
   ncxy <- ncol(xy)
-  
+  if (labels) {
+    if (labelColumn > ncol(xy) || labelColumn <= 0)
+      stop("The column specified is out of range ")
+    tmp <- xy[, ncxy]
+    xy[, ncxy] <- xy[, labelColumn]
+    xy[, labelColumn] <- tmp # swapping the last column with the user-specified column
+    if (nIntervals == NULL)
+      xy[, ncxy] <- as.factor(xy[, ncxy])
+  }
   rns <- row.names(xy)
   if (scale) {
     if (labels) {
@@ -51,10 +59,10 @@ prVis <- function(xy,labels=FALSE,deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
     } else xy <- scale(xy)
     row.names(xy) <- rns
   }
-  
-  if (nSubSam < nrxy && nSubSam > 0)  
+
+  if (nSubSam < nrxy && nSubSam > 0)
     xy <- xy[sample(1:nrxy,nSubSam),]
-  
+
   if (labels) {
     ydata <- xy[,ncxy]
     if (is.null(nIntervals) && !is.factor(ydata))
@@ -67,7 +75,7 @@ prVis <- function(xy,labels=FALSE,deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
     }
     xdata <- xy[,-ncxy, drop=FALSE]
   } else xdata <- xy
-  
+
   xdata <- as.matrix(xdata)
   polyMat <- getPoly(xdata, deg)$xdata
   if (pcaMethod == "prcomp") {
@@ -100,7 +108,7 @@ prVis <- function(xy,labels=FALSE,deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
   if (alpha) {
     require(ggplot2)
     if (labels)  {
-      plotObject <-  qplot(x=xdata[,1],y=xdata[,2],xlab="PC1",ylab="PC2",alpha=alpha,col=ydata,size=I(cex)) 
+      plotObject <-  qplot(x=xdata[,1],y=xdata[,2],xlab="PC1",ylab="PC2",alpha=alpha,col=ydata,size=I(cex))
     } else {
       plotObject <- qplot(x=xdata[,1],y=xdata[,2],xlab="PC1",ylab="PC2",alpha=alpha,size=I(cex))
     }
@@ -108,9 +116,9 @@ prVis <- function(xy,labels=FALSE,deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
 
   } else {
   if (labels)  {
-    plot(xdata, col=ydata, pch=15, cex=cex) 
+    plot(xdata, col=ydata, pch=15, cex=cex)
   } else plot(xdata, pch=15, cex=cex)
-  if (saveOutputs) 
+  if (saveOutputs)
     return(list(gpOut=polyMat,prout=x.pca))
   }
 }
@@ -121,10 +129,10 @@ prVis <- function(xy,labels=FALSE,deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
 # if nSubSam > 0; the argument savedPrVisOut is the return value of
 # prVis()
 
-addRowNums <- function(np,savedPrVisOut) 
+addRowNums <- function(np,savedPrVisOut)
 {
   pcax <- savedPrVisOut$prout$x[,1:2]
-  if(is.null(row.names(pcax))) 
+  if(is.null(row.names(pcax)))
     stop('no row names')
   npcax <- nrow(pcax)
   tmp <- sample(1:npcax,np,replace=FALSE)
