@@ -88,12 +88,13 @@ prVis <- function(xy,labels=FALSE,deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
     distances <- mahalanobis(xdata,colMeans(xdata),xdataCov)
     # find which row the max distances correspond to
     rownames(xdata) <- 1:nrow(xdata)
+    names(ydata) <- 1:nrow(xdata)
     names(distances) <- rownames(xdata)
     sortedDistances <- sort(distances, decreasing=TRUE)
     outliers <- names(sortedDistances)[1:outliersRemoved]
     # remove outliers
     xdata <- xdata[!rownames(xdata) %in% outliers,]
-    ydata <- ydata[!rownames(xdata) %in% outliers,]
+    ydata <- ydata[!names(ydata) %in% outliers]
   }
 
   if (alpha) {
