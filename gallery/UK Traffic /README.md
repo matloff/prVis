@@ -1,10 +1,10 @@
 ## Data
-The dataset collects the total volume of traffic on the stretch of road for the whole year in Leicester, UK. Data can be found at [here](http://www.dft.gov.uk/traffic-counts/download.php).
+The dataset collects the total volume of traffic on the stretch of road for the whole year in Cardiff, UK. Data can be found at [here](http://www.dft.gov.uk/traffic-counts/download.php).
 
 ```r
 # preprocess the data, including only two columns from the original data, and derive the frequency column
-busescoaches <- myTableedinburgh$busescoaches
-linklengthmiles <- myTableedinburgh$linklengthmiles
+busescoaches <- myTable$busescoaches
+linklengthmiles <- myTable$linklengthmiles
 frequency=busescoaches/linklengthmiles
 dataset<-data.frame(busescoaches,linklengthmiles,frequency)
 # And then clustering the data into 3 clusters
@@ -17,3 +17,12 @@ dataset$lab <- as.factor(groups)
 a <- prVis  (dataset, labels = T, saveOutput = T)
 ```
 ## Graphs
+
+### prVis
+![]()
+
+### tsne
+![]()
+
+### umap
+![]()
