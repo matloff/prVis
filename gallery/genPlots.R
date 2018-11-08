@@ -15,9 +15,9 @@ genPlots <- function(dataFile,header=FALSE,sep=",",labelCol){
   data <- read.csv(dataFile,header=header,sep=sep)
   lastCol <- ncol(data)
   # interpret predict column as factor
-  data[,labelCol] <- as.factor(data[,predictCol])
+  data[,labelCol] <- as.factor(data[,labelCol])
   #switch predict column into last place
-  data[,c(labelCol,lastCol)] <- data[,c(lastCol,predictCol)]
+  data[,c(labelCol,lastCol)] <- data[,c(lastCol,labelCol)]
 
   d <- data[,-lastCol]
 
