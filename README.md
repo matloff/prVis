@@ -87,7 +87,7 @@ Yeah! The streaks do reveal some patterns: except for age, these two workers sha
 
 **Options**
 *(1)* RSpectra extension: We give user an option to use RSpectra (require package RSpectra) method to do PCA (Principal Component Analysis), instead of using prcomp. We are expecting a speed up by doing so.
-Default: pcaMethod="prcomp"
+      Default: pcaMethod="prcomp"
 
 *(2)* Outlier removal: We provide user the option to specify the number of outliers to be removed from the output graph. (mahalanobis distance for now)
 Default: outliersRemoved=0
