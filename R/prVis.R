@@ -34,8 +34,10 @@
 #                 prout = output of prcomp()
 #    cex: argument to R plot(), controlling point size
 
-prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,scale=FALSE,nSubSam=0,nIntervals=NULL,
-   outliersRemoved=0,pcaMethod="prcomp",saveOutputs=FALSE,cex=0.5, alpha=0)
+prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
+   scale=FALSE,nSubSam=0,nIntervals=NULL,
+   outliersRemoved=0,pcaMethod="prcomp",
+   saveOutputs=FALSE,cex=0.5, alpha=0)
 {
   # safety check
   if (!pcaMethod %in% c('prcomp','RSpectra'))
@@ -48,7 +50,8 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,scale=FALSE,nSubSam
       stop("The column specified is out of range")
     tmp <- xy[, ncxy]
     xy[, ncxy] <- xy[, yColumn]
-    xy[, yColumn] <- tmp # swapping the last column with the user-specified column
+    # swapping the last column with the user-specified column
+    xy[, yColumn] <- tmp 
 
   }
   rns <- row.names(xy)
@@ -95,21 +98,23 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,scale=FALSE,nSubSam
     distances <- mahalanobis(xdata,colMeans(xdata),xdataCov)
     # find which row the max distances correspond to
     rownames(xdata) <- 1:nrow(xdata)
-    names(ydata) <- 1:nrow(xdata)
+    if (labels) names(ydata) <- 1:nrow(xdata)
     names(distances) <- rownames(xdata)
     sortedDistances <- sort(distances, decreasing=TRUE)
     outliers <- names(sortedDistances)[1:outliersRemoved]
     # remove outliers
     xdata <- xdata[!rownames(xdata) %in% outliers,]
-    ydata <- ydata[!names(ydata) %in% outliers]
+    if (labels) ydata <- ydata[!names(ydata) %in% outliers]
   }
 
   if (alpha) {
     require(ggplot2)
     if (labels)  {
-      plotObject <-  qplot(x=xdata[,1],y=xdata[,2],xlab="PC1",ylab="PC2",alpha=alpha,col=ydata,size=I(cex))
+      plotObject <-  qplot(x=xdata[,1],y=xdata[,2],xlab="PC1",ylab="PC2",
+         alpha=alpha,col=ydata,size=I(cex))
     } else {
-      plotObject <- qplot(x=xdata[,1],y=xdata[,2],xlab="PC1",ylab="PC2",alpha=alpha,size=I(cex))
+      plotObject <- qplot(x=xdata[,1],y=xdata[,2],xlab="PC1",ylab="PC2",
+         alpha=alpha,size=I(cex))
     }
     print(plotObject)
 
