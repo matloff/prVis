@@ -1,13 +1,20 @@
 # prVis, a visualization tool based on polyreg
-Development of a new package to extend the functionality of [the **polyreg** package](https://github.com/matloff/polyreg) and introduce one particular new feature, a visualization tool.
+Development of a new package to extend the functionality of [the **polyreg** package](https://github.com/matloff/polyreg) and introduce one particular new
+feature, a visualization tool.
 
 **Motivation**:
-A simpler, equally effective alternative visulaization tool to various non-linear dimension reduction (generalized Principal Components Analysis) methods, such as t-SNE and UMAP, by applying PCA to “polynomial-ized” versions.
+A simpler, equally effective alternative visulaization tool to various non-linear
+dimension reduction (generalized Principal Components Analysis) methods,
+such as t-SNE and UMAP, by applying PCA to “polynomial-ized” versions.
 
 **Usage:**
-The main function in this package is prVis(), which provides a two dimensional visualization of the X data in classification problems. Users have the option to display the color coded labels (Y, and it can be both in regression cases and in classification cases.)
+The main function in this package is prVis(), which provides a two dimensional
+visualization of the X data in classification problems. Users have the option to
+display the color coded labels (Y, and it can be both in regression cases and in
+classification cases.)
 
-*Example:* Swiss Roll data derived from [Dinoj Surendran's site](http://people.cs.uchicago.edu/~dinoj/manifold/swissroll.html). The preprocessed data can be downloaded [here](https://github.com/matloff/prVis/blob/master/inst/data/SwissRoll/Surendran.txt)
+*Example:* Swiss Roll data derived from [Dinoj Surendran's site](http://people.cs.uchicago.edu/~dinoj/manifold/swissroll.html).
+The preprocessed data can be downloaded [here](https://github.com/matloff/prVis/blob/master/inst/data/SwissRoll/Surendran.txt)
 
 ``` r
 # Read in the data
@@ -29,11 +36,15 @@ prVis(sw,labels=T)
 ```
 ![](https://github.com/matloff/prVis/blob/master/inst/data/SwissRoll/SWwithY.png)
 ```r
-And yeah, the result (indicated by the different colorings) corresponds to our prediction before
+And yeah, the result (indicated by the different colorings) corresponds
+to our prediction before
 ```
 
 *Example:* Programmer/engineer 2000 Census data, Silicon Valley.
-Built into [the **regtools** package](https://github.com/matloff/regtools). Install package or download directly [here](https://raw.githubusercontent.com/matloff/regtools/master/data/prgeng.txt). In the former case, getPE() reads in the dataset and does some preprocessing, producing a data frame named **pe**.
+Built into [the **regtools** package](https://github.com/matloff/regtools).
+Install package or download directly [here](https://raw.githubusercontent.com/matloff/regtools/master/data/prgeng.txt).
+In the former case, getPE() reads in the dataset and does some preprocessing,
+producing a data frame named **pe**.
 ```r
 getPE() # get the dataset
 # Choose some of the variables: age, gender, education level, and occupation
@@ -41,13 +52,16 @@ pe1 <-[, c(1,2,6,7, 12:16)]
 # Plot the graph, and save the output to z for later use
 z  = prVis(pe1, saveOutputs = T)
 axis(side=1)
-# The plot below consists about a dozen of separated streaks, making us wonder why that happens (Note: the data set is not artificial, we do not know any grouping before hand)
+# The plot below consists about a dozen of separated streaks, making us wonder
+# why that happens (Note: the data set is not artificial, we do not know any
+# grouping before hand)
 ```
 ![](https://github.com/matloff/prVis/blob/master/inst/data/PE/pe.png)
 ```r
 # To investigate that question, we call another utility function in the package:
 addRowNums(16,z)
-# This will write the row numbers of 16 random points from the data set on to the graph above.
+# This will write the row numbers of 16 random points from the data set on to
+# the graph above.
 # The function addRowNums will also ouput the highlighted row numbers to the R console:
 [1] "highlighted rows:"
 [1] 31
@@ -83,13 +97,20 @@ pe1[14922,]
 #     occ2 occ3 occ4 occ5
 #14922   0    1    0    0
 ```
-Yeah! The streaks do reveal some patterns: except for age, these two workers share the same occupational type (occ3), same gender, and same education level. The insight we get from this visulaization is that each streak may represent a certain combination of categorical variables!
+Yeah! The streaks do reveal some patterns: except for age, these two workers
+share the same occupational type (occ3), same gender, and same education level.
+The insight we get from this visulaization is that each streak may represent a
+certain combination of categorical variables!
 
 **Options**
-*(1)* RSpectra extension: We give user an option to use RSpectra (require package RSpectra) method to do PCA (Principal Component Analysis), instead of using prcomp. We are expecting a speed up by doing so.
+*(1)* RSpectra extension: We give user an option to use RSpectra (require package
+RSpectra) method to do PCA (Principal Component Analysis), instead of using prcomp.
+We are expecting a speed up by doing so.
       Default: pcaMethod="prcomp"
 
-*(2)* Outlier removal: We provide user the option to specify the number of outliers to be removed from the output graph. (mahalanobis distance for now)
+*(2)* Outlier removal: We provide user the option to specify the number of
+outliers to be removed from the output graph. (mahalanobis distance for now)
 Default: outliersRemoved=0
 
-*(3)* Alpha Blending: User can specify the alpha blending value (require package ggplot2).
+*(3)* Alpha Blending: User can specify the alpha blending value
+(require package ggplot2).
