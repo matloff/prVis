@@ -19,13 +19,13 @@ a <- prVis  (dataset, labels = T, saveOutput = T)
 ## Graphs
 
 ### prVis
-![](https://github.com/matloff/prVis/blob/master/gallery/UK%20Traffic%20/Cardiff_prVis.png)
+![](https://github.com/matloff/prVis/blob/master/inst/gallery/UKTraffic/Cardiff_prVis.png)
 All of the graphs show great separation between groups. Further, if we call the utility function addRowNums inside the prVis package, we can see some interesting trends here.
 ```r
 a <- prVis  (dataset, labels = T, saveOutput = T)
 addRowNums(40, a) # highlighting 40 rows of the dataset, and printing out the line number highlighted
 ```
-![](https://github.com/matloff/prVis/blob/master/gallery/UK%20Traffic%20/Cardiffwithnums.png)
+![](https://github.com/matloff/prVis/blob/master/inst/gallery/UKTraffic/Cardiffwithnums.png)
 ```r
 # We choose 4 points lies approximately on the same line horizontally in the graph
 dataset[478, ]
@@ -44,10 +44,10 @@ dataset[631,]
 We can see that as we move along the PC1 from left to right(holding PC2 approximately unchanged),
 the frequency of each data point decreases. We can then infer those green points (group 3) on the far left part of the graph represents the road segments that have high frequency. One application of the insight is that those road segments may need to be improved because of the potential traffic jam caused by high volumn traffics.
 ### tsne
-![](https://github.com/matloff/prVis/blob/master/gallery/UK%20Traffic%20/TSNE.png)
+![](https://github.com/matloff/prVis/blob/master/inst/gallery/UKTraffic/TSNE.png)
 
 ### umap
-![](https://github.com/matloff/prVis/blob/master/gallery/UK%20Traffic%20/Cardiff_UMAP.png)
+![](https://github.com/matloff/prVis/blob/master/inst/gallery/UKTraffic/Cardiff_UMAP.png)
 
 ## Citation
 The data preprocessing and inspiration come from Michael Grogan:
