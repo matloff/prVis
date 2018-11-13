@@ -14,3 +14,13 @@ time trend.
 
 Expect that we might have 4 clusters, for 4 cities.
 
+Below, in order, are the plots from **prVis**, UMAP from **uwot** and
+UMAP from **umap**.  The **prVis** plot seems to have 4 "prongs,"
+reflecting the 4 cities.
+
+![alt text](PrVis.png)
+
+![alt text](Uwot.png)
+
+![alt text](Umap.png)
+
