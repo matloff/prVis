@@ -11,3 +11,9 @@ corresponding to different combinations of the categorical variables,
 with age changing along a streak.  The other two are snakelike, unclear
 meaning.
 
+![alt text](PrVis.png)
+
+![alt text](Uwot.png)
+
+![alt text](Umap.png)
+
