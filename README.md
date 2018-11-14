@@ -48,7 +48,7 @@ producing a data frame named **pe**.
 ```r
 getPE() # get the dataset
 # Choose some of the variables: age, gender, education level, and occupation
-pe1 <-[, c(1,2,6,7, 12:16)]
+pe1 <- pe[, c(1,2,6,7, 12:16)]
 # Plot the graph, and save the output to z for later use
 z  = prVis(pe1, saveOutputs = T)
 axis(side=1)
