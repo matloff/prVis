@@ -125,12 +125,15 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
     print(plotObject)
 
   } else {
-  if (labels)  {
-    plot(xdata, col=ydata, pch=15, cex=cex)
-  } else plot(xdata, pch=15, cex=cex)
+    if (labels)  {
+      plot(xdata, col=ydata, pch=15, cex=cex)
+    } else {
+      plot(xdata, pch=15, cex=cex)
+    }
   }
-  if (saveOutputs)
+  if (saveOutputs){
     return(list(gpOut=polyMat,prout=x.pca))
+  }
 }
 
 # intended to be used when a plot produced by prVis() is on the screen;
@@ -165,10 +168,9 @@ addRowNums <- function(np=0,savedPrVisOut,specifyInterval=FALSE)
     yStart <- (yMax - yMin)*yStart + yMin
     yFinish <- (yMax - yMin)*yFinish  + yMin
     # filter to datapoints within specified range
-    pcax <- pcax[which(pcax[,1] <= xFinish && pcax[,1] >= xStart && pcax[,2] <=
-                  yFinish && pcax[,2] > yStart),]
+    pcax <- pcax[which(pcax[,1] <= xFinish & pcax[,1] >= xStart & pcax[,2] <=
+                  yFinish & pcax[,2] > yStart),]
   } 
-
 
   npcax <- nrow(pcax)
   if(np == 0) {
