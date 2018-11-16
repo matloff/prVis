@@ -160,13 +160,13 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
 #                    graph's height and the square's width would be 50% of
 #                    the graph's width. 
 
-addRowNums <- function(np=0,savedPrVisOut,specifyInterval=FALSE)
+addRowNums <- function(np=0,savedPrVisOut,specifyArea=FALSE)
 {
   pcax <- savedPrVisOut$prout$x[,1:2]
   if(is.null(row.names(pcax)))
     stop('no row names')
 
-  if(specifyInterval){
+  if(specifyArea){
     # get boundaries of graph
     xMin <- min(savedPrVisOut$prout$x[,1])
     xMax <- max(savedPrVisOut$prout$x[,1])
