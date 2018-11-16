@@ -51,7 +51,7 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
     tmp <- xy[, ncxy]
     xy[, ncxy] <- xy[, yColumn]
     # swapping the last column with the user-specified column
-    xy[, yColumn] <- tmp 
+    xy[, yColumn] <- tmp
 
   }
   rns <- row.names(xy)
@@ -122,9 +122,9 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
   if (labels)  {
     plot(xdata, col=ydata, pch=15, cex=cex)
   } else plot(xdata, pch=15, cex=cex)
+  }
   if (saveOutputs)
     return(list(gpOut=polyMat,prout=x.pca))
-  }
 }
 
 # intended to be used when a plot produced by prVis() is on the screen;
