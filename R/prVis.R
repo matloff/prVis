@@ -27,7 +27,9 @@
 #    nIntervals: in regression case, number of intervals to use for
 #                partioning Y range to create labels
 #    outliersRemoved: specify how many outliers to remove from
-#                     the plot, calculated using mahalanobis distance
+#                     the plot, calculated using mahalanobis distance. if 
+#                     outliersRemoved is between 0 and 1, a corresponding
+#                     percentage of the data will be removed
 #    pcaMethod: specify how eigenvectors will be calculated, using
 #               prcomp or RSpectra
 #    saveOutputs: if TRUE, return list with gpOut = output of getPoly(),
@@ -93,6 +95,10 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
   }
 
   if (outliersRemoved > 0 && outliersRemoved <= nrow(xdata)){
+    # percentage based outlier removal
+    if (outliersRemoved < 1){
+      outliersRemoved = floor(outliersRemoved * nrow(xdata))
+    }
     # calculate mahalanobis distances for each data point
     xdataCov <- var(xdata)
     distances <- mahalanobis(xdata,colMeans(xdata),xdataCov)
