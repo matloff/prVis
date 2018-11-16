@@ -53,7 +53,7 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
     tmp <- xy[, ncxy]
     xy[, ncxy] <- xy[, yColumn]
     # swapping the last column with the user-specified column
-    xy[, yColumn] <- tmp 
+    xy[, yColumn] <- tmp
 
   }
   rns <- row.names(xy)
@@ -209,12 +209,8 @@ addRowNums <- function(np=0,savedPrVisOut,specifyArea=FALSE)
     pcax <- pcax[which(pcax[,1] <= xF & pcax[,1] >= xI & pcax[,2] <=
                   yF & pcax[,2] > yI),]
   } 
-
+  
   npcax <- nrow(pcax)
-  if(np == 0) {
-    np = npcax
-  }
-
   tmp <- sample(1:npcax,np,replace=FALSE)
   rowNames <- row.names(pcax[tmp,])
   print('highlighted rows:')
