@@ -141,12 +141,75 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
 # numbers on the plot; these are the numbers from the full dataset, even
 # if nSubSam > 0; the argument savedPrVisOut is the return value of
 # prVis()
+#
+# arguments:
+#       np: the number of points to add row numbers to. if no value of np is
+#           provided, rownumbers will be added to all datapoints
+#       savedPrVisOut: a list returned from a previous call to prVis with
+#                      saveOutputs=TRUE
+#       specifyArea: if TRUE, will prompt the user to specify the area in
+#                    the plot to add row numbers. The user will be prompted
+#                    for four numbers corresponding to the four corners of
+#                    the area to be specified. Each number input should be
+#                    a number between 0 and 1. A PCA1 interval of (0,1)
+#                    along with a PCA2 interval of (0,1) corresponds to the
+#                    full original plot. A PCA1 interval of (0.25,0.75)
+#                    along with a PCA2 interval of (0.25,0.75) corresponds
+#                    to a square selection centered around the middle of
+#                    the plot. The square's height would be 50% of the
+#                    graph's height and the square's width would be 50% of
+#                    the graph's width. 
 
-addRowNums <- function(np,savedPrVisOut)
+addRowNums <- function(np=0,savedPrVisOut,specifyArea=FALSE)
 {
   pcax <- savedPrVisOut$prout$x[,1:2]
   if(is.null(row.names(pcax)))
     stop('no row names')
+
+  if(specifyArea){
+    # get boundaries of graph
+    xMin <- min(savedPrVisOut$prout$x[,1])
+    xMax <- max(savedPrVisOut$prout$x[,1])
+    yMin <- min(savedPrVisOut$prout$x[,2])
+    yMax <- max(savedPrVisOut$prout$x[,2])
+    # error checking on inputs
+    xI <- as.numeric(readline(prompt="starting x location (float from 0 to
+                                  1):"))
+    xF <- as.numeric(readline(prompt="ending x location (float from 0 to 
+                                   1):"))
+    yI <- as.numeric(readline(prompt="starting y location (float from 0 to 
+                                  1):"))
+    yF <- as.numeric(readline(prompt="ending y location (float from 0 to
+                                   1):"))
+    if (is.na(xI)){
+      stop('starting x location must be a number')
+    }
+    if (is.na(xF)){
+      stop('ending x location must be a number')
+    }
+    if (is.na(yI)){
+      stop('starting y location must be a number')
+    }
+    if (is.na(yF)){
+      stop('ending y location must be a number')
+    }
+    if (xI < 0 | xI > 1 | xF < 0 | xF > 1 | xI > xF |
+        yI < 0 | yI > 1 | yF < 0 | yF > 1 | yI > yF){
+      stop('invalid boundaries (must be between 0 and 1, start must be less
+           than finish')
+    }
+
+    # scale x interval
+    xI <- (xMax - xMin)*xI + xMin
+    xF <- (xMax - xMin)*xF  + xMin
+    # scale y interval
+    yI <- (yMax - yMin)*yI + yMin
+    yF <- (yMax - yMin)*yF  + yMin
+    # filter to datapoints within specified range
+    pcax <- pcax[which(pcax[,1] <= xF & pcax[,1] >= xI & pcax[,2] <=
+                  yF & pcax[,2] > yI),]
+  } 
+  
   npcax <- nrow(pcax)
   tmp <- sample(1:npcax,np,replace=FALSE)
   rowNames <- row.names(pcax[tmp,])

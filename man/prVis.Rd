@@ -24,13 +24,17 @@ addRowNums(np, savedPrVisOut)
      use the full dataset.} 
   \item{nIntervals}{If labels column is continuous, discretize into this
      many levels.}
-  \item{outliersRemoved}{Specify how many outliers to remove from the plot, calculated using mahalanobis distance.}
-  \item{pcaMethod}{Specify how eigenvectors will be calculated, using prcomp or RSpectra}
+  \item{outliersRemoved}{Specify how many outliers to remove from the plot, 
+     calculated using mahalanobis distance.}
+  \item{pcaMethod}{Specify how eigenvectors will be calculated, using prcomp
+     or RSpectra}
   \item{saveOutputs}{Save outputs for use in \code{addRowNums}.}
   \item{cex}{Point size for plot.}
   \item{np}{Number of points to label in plot.}
   \item{savedPrVisOut}{Output save from a previous call, so can avoid
      duplicate computation.}
+  \item{specifyArea}{If set to true, user will be prompted to specify
+     the area that row numbers to be added into}
 }
 
 \details{
