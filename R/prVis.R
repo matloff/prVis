@@ -27,7 +27,7 @@
 #    nIntervals: in regression case, number of intervals to use for
 #                partioning Y range to create labels
 #    outliersRemoved: specify how many outliers to remove from
-#                     the plot, calculated using mahalanobis distance. if 
+#                     the plot, calculated using mahalanobis distance. if
 #                     outliersRemoved is between 0 and 1, a corresponding
 #                     percentage of the data will be removed
 #    pcaMethod: specify how eigenvectors will be calculated, using
@@ -139,7 +139,7 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
 # if nSubSam > 0; the argument savedPrVisOut is the return value of
 # prVis()
 
-addRowNums <- function(np=0,savedPrVisOut,specifyInterval=FALSE)
+addRowNums <- function(np=0,savedPrVisOut,specifyInterval=FALSE, cex=0.5)
 {
   pcax <- savedPrVisOut$prout$x[,1:2]
   if(is.null(row.names(pcax)))
@@ -151,13 +151,13 @@ addRowNums <- function(np=0,savedPrVisOut,specifyInterval=FALSE)
     xMax <- max(savedPrVisOut$prout$x[,1])
     yMin <- min(savedPrVisOut$prout$x[,2])
     yMax <- max(savedPrVisOut$prout$x[,2])
-    xStart <- as.numeric(readline(prompt="Enter start of PCA1 interval"))
+    xStart <- as.numeric(readline(prompt="Enter start of PCA1 interval: "))
     # error check
-    xFinish <- as.numeric(readline(prompt="Enter end of PCA1 interval"))
+    xFinish <- as.numeric(readline(prompt="Enter end of PCA1 interval: "))
     # error check
-    yStart <- as.numeric(readline(prompt="Enter start of PCA2 interval"))
+    yStart <- as.numeric(readline(prompt="Enter start of PCA2 interval: "))
     # error check
-    yFinish <- as.numeric(readline(prompt="Enter end of PCA2 interval"))
+    yFinish <- as.numeric(readline(prompt="Enter end of PCA2 interval: "))
     # scale x interval
     xStart <- (xMax - xMin)*xStart + xMin
     xFinish <- (xMax - xMin)*xFinish  + xMin
@@ -165,9 +165,9 @@ addRowNums <- function(np=0,savedPrVisOut,specifyInterval=FALSE)
     yStart <- (yMax - yMin)*yStart + yMin
     yFinish <- (yMax - yMin)*yFinish  + yMin
     # filter to datapoints within specified range
-    pcax <- pcax[which(pcax[,1] <= xFinish && pcax[,1] >= xStart && pcax[,2] <=
-                  yFinish && pcax[,2] > yStart),]
-  } 
+    pcax <- pcax[which(pcax[,1] <= xFinish & pcax[,1] >= xStart & pcax[,2] <=
+                  yFinish & pcax[,2] > yStart),]
+  }
 
 
   npcax <- nrow(pcax)
@@ -183,6 +183,6 @@ addRowNums <- function(np=0,savedPrVisOut,specifyInterval=FALSE)
     rn <- rowNames[i]
     print(sorted[i])
     coords <- pcax[rn,]
-    text(coords[1],coords[2],rn)
+    text(coords[1],coords[2],rn, cex)
   }
 }
