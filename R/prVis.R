@@ -141,6 +141,24 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
 # numbers on the plot; these are the numbers from the full dataset, even
 # if nSubSam > 0; the argument savedPrVisOut is the return value of
 # prVis()
+#
+# arguments:
+#       np: the number of points to add row numbers to. if no value of np is
+#           provided, rownumbers will be added to all datapoints
+#       savedPrVisOut: a list returned from a previous call to prVis with
+#                      saveOutputs=TRUE
+#       specifyInterval: if TRUE, will prompt the user to specify the area in
+#                        the plot to add row numbers. The user will be prompted
+#                        for four numbers corresponding to the four corners of
+#                        the area to be specified. Each number input should be
+#                        a number between 0 and 1. A PCA1 interval of (0,1)
+#                        along with a PCA2 interval of (0,1) corresponds to the
+#                        full original plot. A PCA1 interval of (0.25,0.75)
+#                        along with a PCA2 interval of (0.25,0.75) corresponds
+#                        to a square selection centered around the middle of
+#                        the plot. The square's height would be 50% of the
+#                        graph's height and the square's width would be 50% of
+#                        the graph's width. 
 
 addRowNums <- function(np=0,savedPrVisOut,specifyInterval=FALSE)
 {
