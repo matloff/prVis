@@ -3,11 +3,32 @@
 A novel visualization tool, based on [the **polyreg**
 package](https://github.com/matloff/polyreg). 
 
-**Motivation**:
+**Motivation:**
 
 An alternative to various non-linear dimension reduction (generalized
 Principal Components Analysis) visualization tools, such as t-SNE and
 UMAP, by applying PCA to “polynomial-ized” data.
+
+**Usefulness of such tools:**
+
+Such techniques are useful in general:
+
+1. As a clustering technique: Does the data seem to break down into a
+   fairly clear number of clusters?
+
+2. For assessment of how well we might do in predictive classification:
+   If the data do seem to cluster fairly well, with each class in mostly
+   nonoverlapping clusters, this may indicate that we
+   can predict well using only the first two components
+   of the transformed data.
+
+Thus such tools are useful for both unsupervised and supervised
+learning.
+
+In addition, the **prVis** package includes tools to investigate further
+in Point 1 above -- how do the clusters relate to the original
+variables, especially categorical ones?
+
 
 **Usage:**
 
