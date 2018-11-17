@@ -27,7 +27,7 @@
 #    nIntervals: in regression case, number of intervals to use for
 #                partioning Y range to create labels
 #    outliersRemoved: specify how many outliers to remove from
-#                     the plot, calculated using mahalanobis distance. if 
+#                     the plot, calculated using mahalanobis distance. if
 #                     outliersRemoved is between 0 and 1, a corresponding
 #                     percentage of the data will be removed
 #    pcaMethod: specify how eigenvectors will be calculated, using
@@ -158,13 +158,13 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
 #                    to a square selection centered around the middle of
 #                    the plot. The square's height would be 50% of the
 #                    graph's height and the square's width would be 50% of
-#                    the graph's width. 
+#                    the graph's width.
 
 addRowNums <- function(np=0,savedPrVisOut,specifyArea=FALSE)
 {
   pcax <- savedPrVisOut$prout$x[,1:2]
   if(is.null(row.names(pcax)))
-    stop('no row names')
+    row.names(savedPrVisOut$prout$x) <- as.character(1:nrow(savedPrVisOut$prout$x))
 
   if(specifyArea){
     # get boundaries of graph
@@ -175,9 +175,9 @@ addRowNums <- function(np=0,savedPrVisOut,specifyArea=FALSE)
     # error checking on inputs
     xI <- as.numeric(readline(prompt="starting x location (float from 0 to
                                   1):"))
-    xF <- as.numeric(readline(prompt="ending x location (float from 0 to 
+    xF <- as.numeric(readline(prompt="ending x location (float from 0 to
                                    1):"))
-    yI <- as.numeric(readline(prompt="starting y location (float from 0 to 
+    yI <- as.numeric(readline(prompt="starting y location (float from 0 to
                                   1):"))
     yF <- as.numeric(readline(prompt="ending y location (float from 0 to
                                    1):"))
@@ -208,8 +208,8 @@ addRowNums <- function(np=0,savedPrVisOut,specifyArea=FALSE)
     # filter to datapoints within specified range
     pcax <- pcax[which(pcax[,1] <= xF & pcax[,1] >= xI & pcax[,2] <=
                   yF & pcax[,2] > yI),]
-  } 
-  
+  }
+
   npcax <- nrow(pcax)
   tmp <- sample(1:npcax,np,replace=FALSE)
   rowNames <- row.names(pcax[tmp,])

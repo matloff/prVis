@@ -3,10 +3,10 @@ Data can be found [here](https://www.kaggle.com/uciml/breast-cancer-wisconsin-da
 
 ## Graph
 #### prVis
-![](prVis_bc.png)
+![](prVis_bc.png) <br/>
 prVis shows a good separation of data <br/>
 
-![](prVis_zoomin.png)
+![](prVis_zoomin.png) <br/>
 When we try to further zoom in the graph by removing 100 outliers (about 12% of the original dataset), prVis shows a clearer distinction between red(malignant) and black(benign), which may provides us the insight on what distinct them from each other.
 #### umap
 ![](UMAP_BC.png)
