@@ -8,6 +8,9 @@ Also, since the dataset is highly unbalanced (492 frauds out of 284,807 transact
 #### prVis
 ![](prVis_creditcard.png) <br/>
 The two groups are nearly perpendicular to each other, suggesting the distict natures of the fraud transactions and normal transactions. Whereas the plot from umap and t-sne reveal no obvious pattern.
+
+#### prcomp
+![](Prcomp_ccR.png)
 #### umap
 ![](UMAP_credit_card_fraus.png)
 #### t-sne
