@@ -1,17 +1,20 @@
 # prVis, a visualization tool based on polyreg
-Development of a new package to extend the functionality of [the **polyreg** package](https://github.com/matloff/polyreg) and introduce one particular new
-feature, a visualization tool.
+
+A novel visualization tool, based on [the **polyreg**
+package](https://github.com/matloff/polyreg). 
 
 **Motivation**:
-A simpler, equally effective alternative visulaization tool to various non-linear
-dimension reduction (generalized Principal Components Analysis) methods,
-such as t-SNE and UMAP, by applying PCA to “polynomial-ized” versions.
+
+An alternative to various non-linear dimension reduction (generalized
+Principal Components Analysis) visualization tools, such as t-SNE and
+UMAP, by applying PCA to “polynomial-ized” data.
 
 **Usage:**
-The main function in this package is prVis(), which provides a two dimensional
-visualization of the X data in classification problems. Users have the option to
-display the color coded labels (Y, and it can be both in regression cases and in
-classification cases.)
+
+The main function in this package is **prVis()**, which provides 
+two-dimensional visualizations and provides dimension reduction in more
+than two dimensions.  Users have the option to display using
+ color coded labels. 
 
 *Example:* Swiss Roll data derived from [Dinoj Surendran's site](http://people.cs.uchicago.edu/~dinoj/manifold/swissroll.html).
 The preprocessed data can be downloaded [here](https://github.com/matloff/prVis/blob/master/inst/data/SwissRoll/Surendran.txt)
