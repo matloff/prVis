@@ -223,3 +223,21 @@ addRowNums <- function(np=0,savedPrVisOut,specifyArea=FALSE)
     text(coords[1],coords[2],rn)
   }
 }
+
+# intended to produce color coding paradigms based on user input;
+# prVis uses the color coding paradigm specified by the factor column (if no
+# factor in the dataset, then no coloring), this function will help user explore
+# the dataset further by the expression specified by the user.
+# Example: if an user wants to highlight the data points which happened to be a
+# male and under 25 years old, he or she may want to input something like:
+# male == 1 + age < 25
+# arguments:
+#       xy: data frame, the same argument that passed into the function prVis
+#       savedPrVisOut: a list returned from a previous call to prVis with
+#                      saveOutputs=TRUE
+
+colorCode (xy, savedPrVisOut)
+{
+  UserIn <- readline(prompt= "Your expression[s](in the form of 'column name'
+'relational op' 'value' followed by '+' in case for more expressions): ")
+}
