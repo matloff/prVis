@@ -1,6 +1,7 @@
 ## Data
 The dataset collects the total volume of traffic on the stretch of road for the
-whole year in Cardiff, UK. Data can be found at [here](http://www.dft.gov.uk/traffic-counts/download.php).
+whole year in Cardiff, UK. 
+Data can be found at [here](http://www.dft.gov.uk/traffic-counts/download.php).
 ## Graphs
 
 ### prVis

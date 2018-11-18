@@ -1,6 +1,8 @@
 
 wheat <- read.table("~/desktop/Res/DATA/wheat/wheatkernal.txt")
-colnames(wheat) <- c("Area", "Perimeter", "compactness", "length of kernal", "width", "asymmetry coefficient", "length of groove", "category")
+colnames(wheat) <- c("Area", "Perimeter", "compactness", "length of kernal",
+                     "width", "asymmetry coefficient", "length of groove",
+                     "category")
 wheat[, 8] <- as.factor(wheat[, 8])
 # prVis
 prVis(wheat, labels = T)
