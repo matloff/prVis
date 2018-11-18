@@ -8,24 +8,25 @@
 Polynomial-based alternative to t-SNE, UMAP etc.}
 
 \usage{
-prVis(xy, labels = FALSE, deg = 2, scale = FALSE, nSubSam = 0, 
-    nIntervals = NULL, outliersRemoved = 0, pcaMethod = "prcomp", 
+prVis(xy, labels = FALSE, deg = 2, scale = FALSE, nSubSam = 0,
+    nIntervals = NULL, outliersRemoved = 0, pcaMethod = "prcomp",
     saveOutputs = FALSE, cex = 0.5)
-addRowNums(np, savedPrVisOut) 
+addRowNums(np, savedPrVisOut, specifyArea = FALSE)
 }
 
 \arguments{
   \item{xy}{Data frame with labels, if any, in the last column.}
   \item{labels}{If TRUE, have class labels.}
   \item{deg}{Degree of polynomial.}
-  \item{scale}{If TRUE, call \code{scale} on nonlabels data before 
+  \item{scale}{If TRUE, call \code{scale} on nonlabels data before
      generating polynomial terms.}
   \item{nSubSam}{Number of random rows of \code{xy} to sample; 0 means
-     use the full dataset.} 
+     use the full dataset.}
   \item{nIntervals}{If labels column is continuous, discretize into this
      many levels.}
-  \item{outliersRemoved}{Specify how many outliers to remove from the plot, 
-     calculated using mahalanobis distance.}
+  \item{outliersRemoved}{Specify how many outliers or how much the percentage
+     corresponding to the data to be removed from the plot, calculated using
+     mahalanobis distance.}
   \item{pcaMethod}{Specify how eigenvectors will be calculated, using prcomp
      or RSpectra}
   \item{saveOutputs}{Save outputs for use in \code{addRowNums}.}
@@ -61,7 +62,7 @@ return value from the call to \code{prcomp}.
 getPE()  # prgeng data, included in pkg
 # may want to predict wage; look at some predictors
 pe1 <- pe[,c(1,2,6:16)]
-z <- prVis(pe1,nSubSam=2000,saveOutputs=T,labels=FALSE)  
+z <- prVis(pe1,nSubSam=2000,saveOutputs=T,labels=FALSE)
 # get a bunch of streaks; why?
 # call addRowNums() (not shown); discover that points on the same streak
 # tend to have same combination of sex, education and occupation; moving
@@ -70,4 +71,3 @@ z <- prVis(pe1,nSubSam=2000,saveOutputs=T,labels=FALSE)
 print('see data/SwissRoll for another example')
 
 }
-
