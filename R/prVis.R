@@ -223,20 +223,30 @@ addRowNums <- function(np=0,savedPrVisOut,specifyArea=FALSE)
   }
 }
 
-# intended to produce color coding paradigms based on user input;
+# intended to produce different grouping methods based on user input;
 # prVis uses the color coding paradigm specified by the factor column (if no
-# factor in the dataset, then no coloring), this function will help user explore
-# the dataset further by the expression specified by the user.
-# Example: if an user wants to highlight the data points which happened to be a
-# male and under 25 years old, he or she may want to input something like:
+# factor in the dataset, then no coloring), this function will create a factor
+# column and replace the default one in the original data frame (if there is any)
+# If there is no factor column in xy, then the created factor column is placed
+# in the last column. The factor levels are specified by expressions. Each
+# expression accounts for one factor level (one color in the output of the graph)
+# User can enter multiple expressions to produce mutiple levels(labels) of a
+# factor column, but they must be mutually exclusive (don't need to be exhautive,
+# the unlabeled data points will be grouped as "other")
+# Example: if an user wants to highlight the group which contains all people who
+# is male **and** under 25 years old, he or she may want to input in this format:
 # male == 1 + age < 25
+# if the user wants to highlight the group which contains people
+# who is male **or** who is under 25 years old, he or she may want to input in
+# this format:
+# male == 1 * age < 25
 # arguments:
 #       xy: data frame, the same argument that passed into the function prVis
-#       savedPrVisOut: a list returned from a previous call to prVis with
-#                      saveOutputs=TRUE
 
-colorCode (xy, savedPrVisOut)
+
+createGroup (xy)
 {
-  UserIn <- readline(prompt= "Your expression[s](in the form of 'column name'
-'relational op' 'value' followed by '+' in case for more expressions): ")
+  UserIn <- readline(
+        prompt="Your expression(followed by '+/*' for more constraints): ")
+
 }
