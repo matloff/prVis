@@ -258,7 +258,7 @@ createGroup <- function(xy)
   }
   expressionNum <- 0
   xy$userDefinedCol <- NA # initilize the factor column defined by user
-
+  hasLabel <- c()
   repeat {
     expressionNum <- expressionNum + 1 # keep track of the # of expressions
     userIn <- readline(
@@ -272,11 +272,10 @@ createGroup <- function(xy)
     userIn <- unlist(strsplit(userIn, split = "")) #string to vector of characters
     if (length(userIn) != length(userExp) - 1)
       stop (length(userIn)," +/* not match ",length(userExp)," constraints")
-    hasLabel <- c()
     for (i in 1:length(userExp)) { # solve one expression
       # the relational operator is extracted from userExp, the result is in Ex
       # EX : "Male", "1"
-      Ex <- unlist(strsplit(userExp[i],split=c("==",">=","<=",">","<","!=")))
+      Ex <- unlist(strsplit(userExp[i],"(==|>=|<=|>|<|!=)"))
       if (length(Ex) != 2)
         stop ("The constraint must follow the format: 'columnName'
         'relationalOperator' 'value'")
@@ -284,8 +283,6 @@ createGroup <- function(xy)
         columnNum <- grep(Ex[1], colnames(xy), fixed = TRUE)
         if (!length(columnNum))
           stop("The specified column ",Ex[1]," is not found in the data frame xy")
-        else
-          columnname <- colnames(xy)[columnNum] #get the user specified col name
       }
         # restore the relational operator
       relationalOp <- substring(userExp[i],first=nchar(Ex[1])+1,last=nchar(Ex[1])+2)
@@ -300,10 +297,10 @@ createGroup <- function(xy)
         rowBelong <- switch(relationalOp, "==" = which(xy[[columnNum]] == Ex[2]),
         "!=" = which (xy[[columnNum]] != Ex[2]))
       }
-      else { # EX[1] is a continuous column, so Ex[2] is a number
+      else { # EX[1] is a continuous column, so Ex[2] should be a number
         val <- as.double(Ex[2])
-        if (is.null(val) && !(val %in% xy[[columnNum]]))
-          stop("The value ", EX[2], " is out of the range")
+        if (is.null(val) || !(val %in% xy[[columnNum]]))
+          stop("The value ", Ex[2], " is out of the range")
         rowBelong <- switch(relationalOp, "==" = which(xy[[columnNum]] == val),
         "!=" = which (xy[[columnNum]] != val),">="= which(xy[[columnNum]]>=val),
         "<="=which(xy[[columnNum]] <= val), ">" = which (xy[[columnNum]] > val),
@@ -326,15 +323,14 @@ createGroup <- function(xy)
       stop ("The expression ", expressionNum, " tries to relabel some data,
       the groups must be mutually exclusive")
     xy$userDefinedCol[labelData] <- as.factor(labelName)
-
+    hasLabel <- union(labelData, hasLabel)
     # check if usr wants more factors/levels/groups
     moreIn <- readline(prompt="Do you want more levels(y/n): ")
     if (tolower(moreIn) != 'y')
       break;
   }
   # replace all NAs with label "others"
-  naRows <- which(is.na(xy$userDefinedCol))
-  xy$userDefinedCol[naRows] <- as.factor("others")
+  xy$userDefinedCol[-hasLabel] <- as.factor("others")
   if (factorCol != 0) {
     xy[, factorCol] <- xy$userDefinedCol
     xy$userDefinedCol <- NULL # delete the column after data is transfered
