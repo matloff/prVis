@@ -8,15 +8,17 @@
 Polynomial-based alternative to t-SNE, UMAP etc.}
 
 \usage{
-prVis(xy, labels = FALSE, deg = 2, scale = FALSE, nSubSam = 0,
-    nIntervals = NULL, outliersRemoved = 0, pcaMethod = "prcomp",
-    saveOutputs = FALSE, cex = 0.5)
+prVis(xy, labels = FALSE, yColumn = ncol (xy), deg = 2, scale = FALSE,
+nSubSam = 0, nIntervals = NULL, outliersRemoved = 0, pcaMethod = "prcomp",
+saveOutputs = FALSE, cex = 0.5, alpha=0)
 addRowNums(np, savedPrVisOut, specifyArea = FALSE)
 }
 
 \arguments{
-  \item{xy}{Data frame with labels, if any, in the last column.}
+  \item{xy}{Data frame with labels, if any, in the last column or can be
+  specified in the yColumn.}
   \item{labels}{If TRUE, have class labels.}
+  \item{yColumn}{The column number of the labeled column, default to be the last}
   \item{deg}{Degree of polynomial.}
   \item{scale}{If TRUE, call \code{scale} on nonlabels data before
      generating polynomial terms.}
@@ -31,6 +33,7 @@ addRowNums(np, savedPrVisOut, specifyArea = FALSE)
      or RSpectra}
   \item{saveOutputs}{Save outputs for use in \code{addRowNums}.}
   \item{cex}{Point size for plot.}
+  \item{alpha}{transparency scale parameter, used in ggplot2}
   \item{np}{Number of points to label in plot.}
   \item{savedPrVisOut}{Output save from a previous call, so can avoid
      duplicate computation.}
