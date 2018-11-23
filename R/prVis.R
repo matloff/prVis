@@ -315,13 +315,11 @@ createGroup <- function(xy)
       else {
         if (userIn[i-1] == "+") # And, get the intersection of the row numbers
           labelData <- intersect(labelData, rowBelong)
-        else if(userIn[i-1] == "*") # Or, get the union
+        else  # Or, get the union
           labelData <- union(labelData, rowBelong)
-        else # to be deleted, ang change else if to else
-          stop ("Design error! userIn has values besides "+" and "*"")
       }
-    }
-    # there is overlaps! potential two or more colors for the same data point
+    } # end for loop
+    # check for overlaps! potential two or more colors for the same data point
     if (length(intersect(labelData, hasLabel)) != 0)
       stop ("The expression ", expressionNum, " tries to relabel some data,
       the groups must be mutually exclusive")
@@ -331,8 +329,10 @@ createGroup <- function(xy)
     moreIn <- readline(prompt="Do you want more levels(y/n): ")
     if (tolower(moreIn) != 'y')
       break;
-  }
+  } # end repeat
   # replace all NAs with label "others"
+  if (length(hasLabel) == 0)
+    stop ("Expression(s) match no data points")
   xy[[columnname]][-hasLabel] <- "others"
   if (factorCol != 0) {
     xy[, factorCol] <- xy[[columnname]]
