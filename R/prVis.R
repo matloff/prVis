@@ -255,9 +255,12 @@ createGroup <- function(xy)
     if (length(factorCol) > 1)
       stop("The data frame cannot have more than one factor column")
     factorCol <- as.numeric(which(sapply(xy, is.factor) == T))
+    columnname<-readline(prompt="Please specify the name of the column you created: ")
+    if (colnames(xy)[factorCol] == columnname)
+    stop ("Duplicate names")
   }
   expressionNum <- 0
-  xy$userDefinedCol <- NA # initilize the factor column defined by user
+  xy[[columnname]] <- NA # initilize the factor column defined by user
   hasLabel <- c()
   repeat {
     expressionNum <- expressionNum + 1 # keep track of the # of expressions
@@ -322,7 +325,7 @@ createGroup <- function(xy)
     if (length(intersect(labelData, hasLabel)) != 0)
       stop ("The expression ", expressionNum, " tries to relabel some data,
       the groups must be mutually exclusive")
-    xy$userDefinedCol[labelData] <- labelName
+    xy[[columnname]][labelData] <- labelName
     hasLabel <- union(labelData, hasLabel)
     # check if usr wants more factors/levels/groups
     moreIn <- readline(prompt="Do you want more levels(y/n): ")
@@ -330,13 +333,13 @@ createGroup <- function(xy)
       break;
   }
   # replace all NAs with label "others"
-  xy$userDefinedCol[-hasLabel] <- "others"
+  xy[[columnname]][-hasLabel] <- "others"
   if (factorCol != 0) {
-    xy[, factorCol] <- xy$userDefinedCol
-    xy$userDefinedCol <- NULL # delete the column after data is transfered
-    colnames(xy)[factorCol] <- "userDefinedCol" # rename the column
+    xy[, factorCol] <- xy[[columnname]]
+    xy[[columnname]] <- NULL # delete the column after data is transfered
+    colnames(xy)[factorCol] <- columnname # rename the column
   }
-  xy$userDefinedCol <- as.factor (xy$userDefinedCol)
+  xy[[columnname]] <- as.factor (xy[[columnname]])
   # return the revised xy
   xy
 }
