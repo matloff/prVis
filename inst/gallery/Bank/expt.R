@@ -1,5 +1,5 @@
 
-f <- function()                                                                 {    
+f <- function(){    
   for(i in 1:ncol(bank)) { 
      b <- bank[,i] 
      if (is.factor(b)) { 

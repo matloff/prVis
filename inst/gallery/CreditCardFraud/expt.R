@@ -4,9 +4,9 @@ library(tsne)
 CCF <- read.csv("~/desktop/big_data/creditcard.csv")
 CCF[, ncol(CCF)] <- as.factor(CCF[, ncol(CCF)])
 length(which(CCF$Class == "1")) #number of fruads
-#get same number of frauds and non frauds, since # of frauds is little compared to 
+# get same number of frauds/non-frauds, since # of frauds is little compared to 
 # number of nonfrauds 
-CCFsubIN <- c(which(CCF$Class == "1"), sample(which(CCF$Class == "0"), size = 492))
+CCFsubIN <- c(which(CCF$Class == "1"),sample(which(CCF$Class == "0"),size=492))
 CCFsub <- CCF[CCFsubIN, ]
 prVis (CCFsub[, -1], labels = T) # exclude time column
 prVis (CCFsub[, -1], labels = T, outliersRemoved = 10)
@@ -19,7 +19,8 @@ CCF[, 1] <- rep(0, nrow(CCF))
 CCF[1,1] <- timeVector[1] - 0
 for (i in 2:nrow(CCF))
 {
-  # record the time needed for that specific transaction, change accumulated to single
+  # record the time needed for that specific transaction
+  # change accumulated to single
   CCF[i,1] <- timeVector[i] - timeVector[i-1]
   if (i %% 1000 == 0)
     print (i) # show the process 
