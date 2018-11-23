@@ -164,7 +164,7 @@ addRowNums <- function(np=0,savedPrVisOut,specifyArea=FALSE)
 {
   pcax <- savedPrVisOut$prout$x[,1:2]
   if(is.null(row.names(pcax)))
-    row.names(savedPrVisOut$prout$x) <- 
+    row.names(savedPrVisOut$prout$x) <-
       as.character(1:nrow(savedPrVisOut$prout$x))
 
   if(specifyArea){
@@ -222,4 +222,121 @@ addRowNums <- function(np=0,savedPrVisOut,specifyArea=FALSE)
     coords <- pcax[rn,]
     text(coords[1],coords[2],rn)
   }
+}
+
+# intended to produce different grouping methods based on user input;
+# prVis uses the color coding paradigm specified by the factor column (if no
+# factor in the dataset, then no coloring), this function will create a factor
+# column and replace the original factor column in the original data frame (if
+# there is any)
+# If there is no factor column in xy, then the created factor column is placed
+# in the last column. The factor levels are specified by expressions. Each
+# expression accounts for one factor level (one color in the output of the graph)
+# User can enter multiple expressions to produce mutiple levels(labels) of a
+# factor column, but they must be mutually exclusive (don't need to be exhautive,
+# the unlabeled data points will be grouped as "other")
+# Example: if an user wants to highlight the group which contains all people who
+# is male **and** under 25 years old, he or she may want to input in this format:
+# male == 1 + age < 25
+# if the user wants to highlight the group which contains people
+# who is male **or** who is under 25 years old, he or she may want to input in
+# this format:
+# male == 1 * age < 25
+# arguments:
+#       xy: data frame, the same argument that passed into the function prVis
+# return value:
+#       A data frame that has a factor column and intended to be passed to prVis
+
+
+createGroup <- function(xy)
+{
+  factorCol <- length(which(sapply(xy, is.factor) == T)) # number of factor cols
+  if (factorCol > 0) {
+    if (length(factorCol) > 1)
+      stop("The data frame cannot have more than one factor column")
+    factorCol <- as.numeric(which(sapply(xy, is.factor) == T))
+  }
+  expressionNum <- 0
+  xy$userDefinedCol <- NA # initilize the factor column defined by user
+  hasLabel <- c()
+  repeat {
+    expressionNum <- expressionNum + 1 # keep track of the # of expressions
+    userIn <- readline(
+          prompt="Your expression(followed by '+/*' for more constraints): ")
+    # delete all white spaces
+    userIn <- gsub(" ", "", userIn, fixed = TRUE)
+    labelName <- userIn
+    userExp <- unlist(strsplit(userIn, "\\+|\\*"))
+    for (i in 1:length(userExp)) # userIn now is the string of concat ops
+      userIn <- sub(userExp[i], "", userIn, fixed = T)
+    userIn <- unlist(strsplit(userIn, split = "")) #string to vector of characters
+    if (length(userIn) != length(userExp) - 1)
+      stop (length(userIn)," +/* not match ",length(userExp)," constraints")
+    for (i in 1:length(userExp)) { # solve one expression
+      # the relational operator is extracted from userExp, the result is in Ex
+      # EX : "Male", "1"
+      Ex <- unlist(strsplit(userExp[i],"(==|>=|<=|>|<|!=)"))
+      if (length(Ex) != 2)
+        stop ("The constraint must follow the format: 'columnName'
+        'relationalOperator' 'value'")
+      else {
+        columnNum <- grep(Ex[1], colnames(xy), fixed = TRUE)
+        if (!length(columnNum))
+          stop("The specified column ",Ex[1]," is not found in the data frame xy")
+      }
+        # restore the relational operator
+      relationalOp <- substring(userExp[i],first=nchar(Ex[1])+1,last=nchar(Ex[1])+2)
+      if (columnNum == factorCol) # the user spcified column is the factor col
+      {
+        # check to see if the label is in the factor column
+        if (!Ex[2] %in% levels(xy[[columnNum]]))
+          stop ("The label ", Ex[2], " is not in the factor column")
+        if (!relationalOp %in% c("==", "!="))
+          stop ("Use of the inappropriate operator ", relationalOp)
+
+        rowBelong <- switch(relationalOp, "==" = which(xy[[columnNum]] == Ex[2]),
+        "!=" = which (xy[[columnNum]] != Ex[2]))
+      }
+      else { # EX[1] is a continuous column, so Ex[2] should be a number
+        val <- as.double(Ex[2])
+        if (is.null(val) || !(val %in% xy[[columnNum]]))
+          stop("The value ", Ex[2], " is out of the range")
+        rowBelong <- switch(relationalOp, "==" = which(xy[[columnNum]] == val),
+        "!=" = which (xy[[columnNum]] != val),">="= which(xy[[columnNum]]>=val),
+        "<="=which(xy[[columnNum]] <= val), ">" = which (xy[[columnNum]] > val),
+         "<" = which(xy[[columnNum]] < val))
+      }
+
+      if (i == 1)
+        labelData <- rowBelong # initialize labelData
+      else {
+        if (userIn[i-1] == "+") # And, get the intersection of the row numbers
+          labelData <- intersect(labelData, rowBelong)
+        else if(userIn[i-1] == "*") # Or, get the union
+          labelData <- union(labelData, rowBelong)
+        else # to be deleted, ang change else if to else
+          stop ("Design error! userIn has values besides "+" and "*"")
+      }
+    }
+    # there is overlaps! potential two or more colors for the same data point
+    if (length(intersect(labelData, hasLabel)) != 0)
+      stop ("The expression ", expressionNum, " tries to relabel some data,
+      the groups must be mutually exclusive")
+    xy$userDefinedCol[labelData] <- labelName
+    hasLabel <- union(labelData, hasLabel)
+    # check if usr wants more factors/levels/groups
+    moreIn <- readline(prompt="Do you want more levels(y/n): ")
+    if (tolower(moreIn) != 'y')
+      break;
+  }
+  # replace all NAs with label "others"
+  xy$userDefinedCol[-hasLabel] <- "others"
+  if (factorCol != 0) {
+    xy[, factorCol] <- xy$userDefinedCol
+    xy$userDefinedCol <- NULL # delete the column after data is transfered
+    colnames(xy)[factorCol] <- "userDefinedCol" # rename the column
+  }
+  xy$userDefinedCol <- as.factor (xy$userDefinedCol)
+  # return the revised xy
+  xy
 }
