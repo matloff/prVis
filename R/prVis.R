@@ -322,7 +322,7 @@ createGroup <- function(xy)
     if (length(intersect(labelData, hasLabel)) != 0)
       stop ("The expression ", expressionNum, " tries to relabel some data,
       the groups must be mutually exclusive")
-    xy$userDefinedCol[labelData] <- as.factor(labelName)
+    xy$userDefinedCol[labelData] <- labelName
     hasLabel <- union(labelData, hasLabel)
     # check if usr wants more factors/levels/groups
     moreIn <- readline(prompt="Do you want more levels(y/n): ")
@@ -330,12 +330,13 @@ createGroup <- function(xy)
       break;
   }
   # replace all NAs with label "others"
-  xy$userDefinedCol[-hasLabel] <- as.factor("others")
+  xy$userDefinedCol[-hasLabel] <- "others"
   if (factorCol != 0) {
     xy[, factorCol] <- xy$userDefinedCol
     xy$userDefinedCol <- NULL # delete the column after data is transfered
     colnames(xy)[factorCol] <- "userDefinedCol" # rename the column
   }
+  xy$userDefinedCol <- as.factor (xy$userDefinedCol)
   # return the revised xy
   xy
 }
