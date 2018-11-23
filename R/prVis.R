@@ -164,7 +164,7 @@ addRowNums <- function(np=0,savedPrVisOut,specifyArea=FALSE)
 {
   pcax <- savedPrVisOut$prout$x[,1:2]
   if(is.null(row.names(pcax)))
-    row.names(savedPrVisOut$prout$x) <- 
+    row.names(savedPrVisOut$prout$x) <-
       as.character(1:nrow(savedPrVisOut$prout$x))
 
   if(specifyArea){
@@ -248,7 +248,7 @@ addRowNums <- function(np=0,savedPrVisOut,specifyArea=FALSE)
 #       A data frame that has a factor column and intended to be passed to prVis
 
 
-createGroup (xy)
+createGroup <- function(xy)
 {
   factorCol <- length(which(sapply(xy, is.factor) == T)) # number of factor cols
   if (factorCol > 0) {
@@ -265,7 +265,7 @@ createGroup (xy)
           prompt="Your expression(followed by '+/*' for more constraints): ")
     # delete all white spaces
     userIn <- gsub(" ", "", userIn, fixed = TRUE)
-    labelName < - userIn
+    labelName <- userIn
     userExp <- unlist(strsplit(userIn, "\\+|\\*"))
     for (i in 1:length(userExp)) # userIn now is the string of concat ops
       userIn <- sub(userExp[i], "", userIn, fixed = T)
@@ -288,20 +288,20 @@ createGroup (xy)
           columnname <- colnames(xy)[columnNum] #get the user specified col name
       }
         # restore the relational operator
-      relationalOp <- substring(userExp[i],first=nchar(EX[1])+1,last=nchar(EX[1])+2)
+      relationalOp <- substring(userExp[i],first=nchar(Ex[1])+1,last=nchar(Ex[1])+2)
       if (columnNum == factorCol) # the user spcified column is the factor col
       {
         # check to see if the label is in the factor column
-        if (!EX[2] %in% levels(xy[[columnNum]]))
-          stop ("The label ", EX[2], " is not in the factor column")
+        if (!Ex[2] %in% levels(xy[[columnNum]]))
+          stop ("The label ", Ex[2], " is not in the factor column")
         if (!relationalOp %in% c("==", "!="))
           stop ("Use of the inappropriate operator ", relationalOp)
 
-        rowBelong <- switch(relationalOp, "==" = which(xy[[columnNum]] == EX[2]),
-        "!=" = which (xy[[columnNum]] != EX[2]))
+        rowBelong <- switch(relationalOp, "==" = which(xy[[columnNum]] == Ex[2]),
+        "!=" = which (xy[[columnNum]] != Ex[2]))
       }
       else { # EX[1] is a continuous column, so Ex[2] is a number
-        val <- as.double(EX[2])
+        val <- as.double(Ex[2])
         if (is.null(val) && !(val %in% xy[[columnNum]]))
           stop("The value ", EX[2], " is out of the range")
         rowBelong <- switch(relationalOp, "==" = which(xy[[columnNum]] == val),
