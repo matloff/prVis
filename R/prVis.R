@@ -234,7 +234,7 @@ addRowNums <- function(np=0,savedPrVisOut,specifyArea=FALSE)
 # expression accounts for one factor level (one color in the output of the graph)
 # User can enter multiple expressions to produce mutiple levels(labels) of a
 # factor column, but they must be mutually exclusive (don't need to be exhautive,
-# the unlabeled data points will be grouped as "other")
+# the unlabeled data points will be grouped as "others")
 # Example: if an user wants to highlight the group which contains all people who
 # is male **and** under 25 years old, he or she may want to input in this format:
 # male == 1 + age < 25
@@ -251,11 +251,11 @@ addRowNums <- function(np=0,savedPrVisOut,specifyArea=FALSE)
 createGroup <- function(xy)
 {
   factorCol <- length(which(sapply(xy, is.factor) == T)) # number of factor cols
+  columnname<-readline(prompt="Please specify the name of the column you created: ")
   if (factorCol > 0) {
     if (length(factorCol) > 1)
       stop("The data frame cannot have more than one factor column")
     factorCol <- as.numeric(which(sapply(xy, is.factor) == T))
-    columnname<-readline(prompt="Please specify the name of the column you created: ")
     if (colnames(xy)[factorCol] == columnname)
     stop ("Duplicate names")
   }
@@ -302,7 +302,7 @@ createGroup <- function(xy)
       }
       else { # EX[1] is a continuous column, so Ex[2] should be a number
         val <- as.double(Ex[2])
-        if (is.null(val) || !(val %in% xy[[columnNum]]))
+        if (is.null(val)||val< min(xy[[columnNum]])||val > max(xy[[columnNum]]))
           stop("The value ", Ex[2], " is out of the range")
         rowBelong <- switch(relationalOp, "==" = which(xy[[columnNum]] == val),
         "!=" = which (xy[[columnNum]] != val),">="= which(xy[[columnNum]]>=val),
