@@ -297,7 +297,8 @@ createGroup <- function(xy)
           stop("The specified column ",Ex[1]," is not found in the data frame xy")
       }
       # restore the relational operator
-      relationalOp <- substring(userExp[i],first=nchar(Ex[1])+1,last=nchar(Ex[1])+2)
+      relationalOp <- sub(Ex[1], "", userExp[i], fixed= TRUE)
+      relationalOp <- sub(Ex[2], "", relationalOp, fixed= TRUE)
       if (columnNum == factorCol) # the user spcified column is the factor col
       {
         # check to see if the label specified is in the factor column
