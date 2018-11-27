@@ -252,12 +252,14 @@ addRowNums <- function(np=0,savedPrVisOut,specifyArea=FALSE)
 
 createGroup <- function(xy)
 {
-  factorCol <- length (which(sapply(xy, is.factor) == T))
+  factorCol <- length(which(sapply(xy, is.factor) == T)) # number of factor cols
   columnname<-readline(prompt="Please specify the name of the column you created: ")
   if (factorCol > 0) {
-    # get the vector of index of the factor column
+    if (length(factorCol) > 1) # if there is more than one factor cols, error!
+      stop("The data frame cannot have more than one factor column")
+    # get index of the factor column
     factorCol <- as.numeric(which(sapply(xy, is.factor) == T))
-    if (columnname %in% colnames(xy)) #if user specified name exist already
+    if (colnames(xy)[factorCol] == columnname)#if user specified name exist already
       stop("Duplicate names")
   }
   expressionNum <- 0 # track the expression, later use for error message
@@ -299,7 +301,7 @@ createGroup <- function(xy)
       # restore the relational operator
       relationalOp <- sub(Ex[1], "", userExp[i], fixed= TRUE)
       relationalOp <- sub(Ex[2], "", relationalOp, fixed= TRUE)
-      if (columnNum %in% factorCol) #the usr spcified column is in the factor col
+      if (columnNum == factorCol) # the user spcified column is the factor col
       {
         # check to see if the label specified is in the factor column
         if (!Ex[2] %in% levels(xy[[columnNum]]))
@@ -354,15 +356,10 @@ createGroup <- function(xy)
     stop ("Expression(s) match no data points")
   # replace all NAs (data that has not yet been labeled) with label "others"
   xy[[columnname]][-hasLabel] <- "others"
-  if (length(factorCol) >= 1)
-  { # xy originally has one or more factor column(s), replace it (them)
-    if (length(factorCol) == 1) {
-      xy[, factorCol] <- xy[[columnname]]
-      xy[[columnname]] <- NULL # delete the column after data is transfered
-      colnames(xy)[factorCol] <- columnname # rename the column
-    }
-    else # has multiple factor cols, delete them all
-      xy <- xy[, !sapply(xy, is.factor)]
+  if (factorCol != 0) { # xy originally has one factor column, replace that
+    xy[, factorCol] <- xy[[columnname]]
+    xy[[columnname]] <- NULL # delete the column after data is transfered
+    colnames(xy)[factorCol] <- columnname # rename the column
   }
   xy[[columnname]] <- as.factor (xy[[columnname]])
   # return the revised xy
