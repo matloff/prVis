@@ -292,7 +292,9 @@ createGroup <- function(xy)
         stop ("The constraint must follow the format: 'columnName'
         'relationalOperator' 'value'")
       else {
-        columnNum <- grep(Ex[1], colnames(xy), fixed = TRUE)
+        tmp <- paste("\\b", Ex[1], sep="")
+        tmp <- paste(tmp, "\\b", sep="")
+        columnNum <- grep(tmp, colnames(xy))
         if (!length(columnNum)) # xy should have the specified column
           stop("The specified column ",Ex[1]," is not found in the data frame xy")
       }
