@@ -39,7 +39,7 @@
 prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
    scale=FALSE,nSubSam=0,nIntervals=NULL,
    outliersRemoved=0,pcaMethod="prcomp",
-   saveOutputs=FALSE,cex=0.5, alpha=0)
+   saveOutputs="lastPrVisOut",cex=0.5, alpha=0)
 {
   # safety check
   if (!pcaMethod %in% c('prcomp','RSpectra'))
@@ -131,8 +131,9 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
       plot(xdata, pch=15, cex=cex)
     }
   }
-  if (saveOutputs){
-    return(list(gpOut=polyMat,prout=x.pca))
+  if (saveOutputs != ""){
+    outputList <- list(gpOut=polyMat,prout=x.pca)
+    save(outputList,file=saveOutputs)
   }
 }
 
@@ -160,19 +161,20 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
 #                    graph's height and the square's width would be 50% of
 #                    the graph's width.
 
-addRowNums <- function(np=0,savedPrVisOut,specifyArea=FALSE)
+addRowNums <- function(np=0,savedPrVisOut="lastPrVisOut",specifyArea=FALSE)
 {
-  pcax <- savedPrVisOut$prout$x[,1:2]
+  load(savedPrVisOut)
+  pcax <- outputList$prout$x[,1:2]
   if(is.null(row.names(pcax)))
-    row.names(savedPrVisOut$prout$x) <-
-      as.character(1:nrow(savedPrVisOut$prout$x))
+    row.names(outputList$prout$x) <-
+      as.character(1:nrow(outputList$prout$x))
 
   if(specifyArea){
     # get boundaries of graph
-    xMin <- min(savedPrVisOut$prout$x[,1])
-    xMax <- max(savedPrVisOut$prout$x[,1])
-    yMin <- min(savedPrVisOut$prout$x[,2])
-    yMax <- max(savedPrVisOut$prout$x[,2])
+    xMin <- min(outputList$prout$x[,1])
+    xMax <- max(outputList$prout$x[,1])
+    yMin <- min(outputList$prout$x[,2])
+    yMax <- max(outputList$prout$x[,2])
     # error checking on inputs
     xI <- as.numeric(readline(prompt="starting x location (float from 0 to
                                   1):"))
