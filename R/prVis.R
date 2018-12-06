@@ -34,7 +34,7 @@
 #               prcomp or RSpectra
 #    saveOutputs: specify the name of the file where the results will be saved.
 #                 default file is 'lastPrVisOut'. set to the empty string to
-#                 not save results. 
+#                 not save results.
 #    cex: argument to R plot(), controlling point size
 
 prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
@@ -133,7 +133,7 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
     }
   }
   if (saveOutputs != ""){
-    outputList <- list(gpOut=polyMat,prout=x.pca)
+    outputList <- list(gpOut=polyMat,prout=x.pca, colName=colnames(xy))
     save(outputList,file=saveOutputs)
   }
 }
@@ -164,7 +164,7 @@ addRowNums <- function(np=0,area=c(0,1,0,1),savedPrVisOut="lastPrVisOut")
     row.names(outputList$prout$x) <-
       as.character(1:nrow(outputList$prout$x))
 
-  if(area != c(0,1,0,1){
+  if(identical(area, c(0,1,0,1))){
     # get boundaries of graph
     xMin <- min(outputList$prout$x[,1])
     xMax <- max(outputList$prout$x[,1])
