@@ -32,6 +32,11 @@
 #                     percentage of the data will be removed
 #    pcaMethod: specify how eigenvectors will be calculated, using
 #               prcomp or RSpectra
+#    parDims: number of parallel PCA dimensions to graph. If parDims > 0, the 
+#             a parallel coordinate graph will be displayed using the
+#             cdparcoord package.
+#    nLevels: number of levels to discretize the principal components into. Will
+#             be used when parDims > 0.
 #    saveOutputs: specify the name of the file where the results will be saved.
 #                 default file is 'lastPrVisOut'. set to the empty string to
 #                 not save results.
@@ -41,7 +46,7 @@
 #           create the plot
 prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
    scale=FALSE,nSubSam=0,nIntervals=NULL,
-   outliersRemoved=0,pcaMethod="prcomp",
+   outliersRemoved=0,pcaMethod="prcomp",parDims=0,nLevels=10,
    saveOutputs="lastPrVisOut",cex=0.5, alpha=0)
 {
   # safety check
@@ -114,6 +119,14 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
     # remove outliers
     xdata <- xdata[!rownames(xdata) %in% outliers,]
     if (labels) ydata <- ydata[!names(ydata) %in% outliers]
+  }
+
+  # parallel coordinate graphing
+  if (parDims > 0) {
+    require(cdparcoord)
+    dims <- x.pca[,1:parDims]
+    pcdata <- discretize(dims,nlevels=nLevels)
+    discparcoord(pcdata)
   }
 
   if (alpha) {
