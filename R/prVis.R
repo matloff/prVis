@@ -36,7 +36,9 @@
 #                 default file is 'lastPrVisOut'. set to the empty string to
 #                 not save results.
 #    cex: argument to R plot(), controlling point size
-
+#    alpha: a number between 0 and 1 that can be used to specify transparency
+#           for alpha blending. If alpha is specified ggplot2 will be used to
+#           create the plot
 prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
    scale=FALSE,nSubSam=0,nIntervals=NULL,
    outliersRemoved=0,pcaMethod="prcomp",
