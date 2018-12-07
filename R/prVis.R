@@ -237,7 +237,8 @@ addRowNums <- function(np=0,area=c(0,1,0,1),savedPrVisOut="lastPrVisOut")
 #       represents certain characteristics of the data within the group (or
 #       with same level, same label)
 
-colorCode <- function(colName="",n=256,exps="", savedPrVisOut="lastPrVisOut")
+colorCode <- function(colName="",n=256,exps="", savedPrVisOut="lastPrVisOut",
+cex = 0.5)
 {
   load(savedPrVisOut)
   xdata <- outputList$gpOut[,1:length(outputList$colName)]
@@ -265,8 +266,10 @@ colorCode <- function(colName="",n=256,exps="", savedPrVisOut="lastPrVisOut")
   else { #original createGroup, only 1 or 0 factor cols, not reuseable, not interactive
     numberOfRows <- length(outputList$prout$x[,1])
     userCol <- rep(NA, numberOfRows)
-    if (!is.null(outputList$yname)) #original dataset has a factor column
+    hasY <- !(is.null(outputList$yname))
+    if (hasY) #original dataset has a factor column
       factorCol <- outputList$yCol
+
     hasLabel <- c() # track rows that has already had a label, check for relable
     for (i in 1:length(exps)) {
       # delete all white spaces (compress the string)
@@ -274,7 +277,7 @@ colorCode <- function(colName="",n=256,exps="", savedPrVisOut="lastPrVisOut")
       labelName <- exp
       subExp <- unlist(strsplit(exp, "\\+|\\*"))
       for (m in 1:length(subExp))
-        exp <- sub(userExp[m], "", exp, fixed = T)
+        exp <- sub(subExp[m], "", exp, fixed = T)
       exp <- unlist(strsplit(exp, split="")) #string to vector of characters
       #number of +/* operators should be one less than the number of constraints
       if (length(exp) != length(subExp) - 1)
@@ -290,22 +293,22 @@ colorCode <- function(colName="",n=256,exps="", savedPrVisOut="lastPrVisOut")
           tmp <- paste("\\b", Ex[1], sep="")
           tmp <- paste(tmp, "\\b", sep="")
           columnNum <- grep(tmp, outputList$colName)
-          if (!length(columnNum) && Ex[1] != outputList$yname)
+          if (!length(columnNum) && (!hasY || tmp != outputList$yname))
             stop("The specified column ",Ex[1]," is not found in the data frame xy")
           # restore the relational operator
-          relationalOp <- sub(Ex[1], "", subExp[i], fixed= TRUE)
+          relationalOp <- sub(Ex[1], "", subExp[j], fixed= TRUE)
           relationalOp <- sub(Ex[2], "", relationalOp, fixed= TRUE)
 
-          if (tmp == outputList$yname) # Ex[1] is the factorcol
+          if (hasY && tmp == outputList$yname) # Ex[1] is the factorcol
           {
-            if (!Ex[2] %in% levels(factorCol]))
+            if (!Ex[2] %in% levels(factorCol))
               stop ("The label ", Ex[2], " is not in the factor column")
             # when ecounter operations between labels, only == and != make sense
             if (!relationalOp %in% c("==", "!="))
               stop ("Use of the inappropriate operator ", relationalOp)
             # get the row numbers of data that satisfy the constraint userExp[i]
             rowBelong <- switch(relationalOp, "==" = which(factorCol == Ex[2]),
-            "!=" = which ((factorCol != Ex[2]))
+            "!=" = which (factorCol != Ex[2]))
           }
           else { # EX[1] is a continuous column, so Ex[2] should be a number
             val <- as.double(Ex[2])
@@ -332,7 +335,7 @@ colorCode <- function(colName="",n=256,exps="", savedPrVisOut="lastPrVisOut")
       # check for overlaps! will cause relabel of certain data that satisfy two or
       # more expressions. Enforcing mutually exclusiveness between expressions
       if (length(intersect(labelData, hasLabel)) != 0)
-        stop ("The expression ", expressionNum, " tries to relabel some data,
+        stop ("The expression ", i, " tries to relabel some data,
         the groups must be mutually exclusive")
       # gives the label to data that satisfy the expression
       userCol[labelData] <- labelName
@@ -343,7 +346,8 @@ colorCode <- function(colName="",n=256,exps="", savedPrVisOut="lastPrVisOut")
      stop ("Expression(s) match no data points")
 
    userCol[-hasLabel] <- "others"
-   plot (xdata, col=userCol, pch=15, cex=cex)
+   userCol <- as.factor(userCol)
+   plot (plotData, col=userCol, pch=15, cex=cex)
  } # end createCol
 }
 
