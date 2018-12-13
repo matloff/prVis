@@ -10,8 +10,9 @@ Polynomial-based alternative to t-SNE, UMAP etc.}
 \usage{
 prVis(xy, labels = FALSE, yColumn = ncol (xy), deg = 2, scale = FALSE,
 nSubSam = 0, nIntervals = NULL, outliersRemoved = 0, pcaMethod = "prcomp",
-saveOutputs = FALSE, cex = 0.5, alpha=0)
+saveOutputs="lastPrVisOut", cex = 0.5, alpha=0)
 addRowNums(np, savedPrVisOut, specifyArea = FALSE)
+colorCode(colName="",n=256,exps="", savedPrVisOut="lastPrVisOut", cex = 0.5)
 }
 
 \arguments{
@@ -31,7 +32,7 @@ addRowNums(np, savedPrVisOut, specifyArea = FALSE)
      mahalanobis distance.}
   \item{pcaMethod}{Specify how eigenvectors will be calculated, using prcomp
      or RSpectra}
-  \item{saveOutputs}{Save outputs for use in \code{addRowNums}.}
+  \item{saveOutputs}{Save prVis object to a file}
   \item{cex}{Point size for plot.}
   \item{alpha}{transparency scale parameter, used in ggplot2}
   \item{np}{Number of points to label in plot.}
@@ -39,6 +40,9 @@ addRowNums(np, savedPrVisOut, specifyArea = FALSE)
      duplicate computation.}
   \item{specifyArea}{If set to true, user will be prompted to specify
      the area that row numbers to be added into}
+  \itme{colName}{Continuous column that user wants to produce color}
+  \item{n}{rainbow parameter}
+  \item{exps}{expressions that create a label column that produces coloring}
 }
 
 \details{
@@ -65,12 +69,12 @@ return value from the call to \code{prcomp}.
 getPE()  # prgeng data, included in pkg
 # may want to predict wage; look at some predictors
 pe1 <- pe[,c(1,2,6:16)]
-z <- prVis(pe1,nSubSam=2000,saveOutputs=T,labels=FALSE)
+z <- prVis(pe1,nSubSam=2000,labels=FALSE)
 # get a bunch of streaks; why?
 # call addRowNums() (not shown); discover that points on the same streak
 # tend to have same combination of sex, education and occupation; moving
 # along a streak mainly consists of variying age
-
+colorCode(exps=c("sex==1*occ3==1", "sex==1* occ2==1"))
 print('see data/SwissRoll for another example')
 
 }

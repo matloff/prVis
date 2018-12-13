@@ -213,18 +213,29 @@ addRowNums <- function(np=0,area=c(0,1,0,1),savedPrVisOut="lastPrVisOut")
   }
 }
 
-# colorCode
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
+# colorCode: display color coding for user-specified vairables or expressions.
+# Normally called after prVis, produce a new coloring of the same plot produced
+# by prVis.
+# arguments:
+#          colName: user can specify the column that he or she wants to produce
+#                   the color on. The column specified must be a continuous one.
+#                   If you want to produce the coloring based on a factor column,
+#                   prVis has already had the functionality.
+#          n: rainbow parameter. We produce the coloring of a continuous variable
+#             using function rainbow, and n is passed in to the function as an
+#             option.
+#          exps: expressions that create a label column that produces coloring.
+#                If user specifies colName, he or she cannot provide arguments
+#                for exps, since they are two ways to produce coloring (should
+#                be mutually exclusive). User can supply several expressions,
+#                each one corresponding to a group (a label, a color, a level),
+#                and concatenating by c(). The expression should be mutually
+#                exclusive, since a data point cannot be in two colors.
+#                expression format:
+#                <exp> ::= <subexpression> [(+|*) <subexpression>]
+#                <subexpression> ::= columnname relationalOperator value
+#                Note: * represents logic and, + represents logic or
+#          savedPrVisOut: the file that stores a prVis object
 
 colorCode <- function(colName="",n=256,exps="", savedPrVisOut="lastPrVisOut",
 cex = 0.5)
@@ -252,9 +263,9 @@ cex = 0.5)
   else if(colName != "" && exps != "") # illegal specify both
     stop("colName for rainbow, exps for createFactor column")
 
-  else { #original createGroup, only 1 or 0 factor cols, not reuseable, not interactive
+  else { # create a label column with potentially more than one labels
     numberOfRows <- length(outputList$prout$x[,1])
-    userCol <- rep(NA, numberOfRows)
+    userCol <- rep(NA, numberOfRows) # initialize label column
     hasY <- !(is.null(outputList$yname))
     if (hasY) #original dataset has a factor column
       factorCol <- outputList$yCol
