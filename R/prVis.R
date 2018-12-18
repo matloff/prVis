@@ -166,10 +166,10 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
 addRowNums <- function(np=0,area=c(0,1,0,1),savedPrVisOut="lastPrVisOut")
 {
   load(savedPrVisOut)
-  pcax <- outputList$prout$x[,1:2]
-  if(is.null(row.names(pcax)))
+  if(is.null(row.names(outputList$prout$x[,1:2])))
     row.names(outputList$prout$x) <-
       as.character(1:nrow(outputList$prout$x))
+  pcax <- outputList$prout$x[,1:2]
 
   if(identical(area, c(0,1,0,1))){
     # get boundaries of graph
