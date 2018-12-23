@@ -32,14 +32,17 @@
 #                     percentage of the data will be removed
 #    pcaMethod: specify how eigenvectors will be calculated, using
 #               prcomp or RSpectra
-#    saveOutputs: if TRUE, return list with gpOut = output of getPoly(),
-#                 prout = output of prcomp()
+#    saveOutputs: specify the name of the file where the results will be saved.
+#                 default file is 'lastPrVisOut'. set to the empty string to
+#                 not save results.
 #    cex: argument to R plot(), controlling point size
-
+#    alpha: a number between 0 and 1 that can be used to specify transparency
+#           for alpha blending. If alpha is specified ggplot2 will be used to
+#           create the plot
 prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
    scale=FALSE,nSubSam=0,nIntervals=NULL,
    outliersRemoved=0,pcaMethod="prcomp",
-   saveOutputs=FALSE,cex=0.5, alpha=0)
+   saveOutputs="lastPrVisOut",cex=0.5, alpha=0)
 {
   # safety check
   if (!pcaMethod %in% c('prcomp','RSpectra'))
@@ -131,8 +134,16 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
       plot(xdata, pch=15, cex=cex)
     }
   }
-  if (saveOutputs){
-    return(list(gpOut=polyMat,prout=x.pca))
+  if (saveOutputs != ""){
+    # ensure that data is saved correctly for continuous columns
+    if (labels && is.factor(ydata)) 
+      outputList <- list(gpOut=polyMat,prout=x.pca,
+        colName=colnames(xy[, -ncxy]), yCol = ydata, yname=colnames(xy)[ncxy])
+        # yCol and yname are the names of the factor column
+    # if ydata is not a factor
+    else 
+      outputList <- list(gpOut=polyMat,prout=x.pca, colName=colnames(xy))
+    save(outputList,file=saveOutputs)
   }
 }
 
@@ -145,59 +156,39 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
 # arguments:
 #       np: the number of points to add row numbers to. if no value of np is
 #           provided, rownumbers will be added to all datapoints
-#       savedPrVisOut: a list returned from a previous call to prVis with
-#                      saveOutputs=TRUE
-#       specifyArea: if TRUE, will prompt the user to specify the area in
-#                    the plot to add row numbers. The user will be prompted
-#                    for four numbers corresponding to the four corners of
-#                    the area to be specified. Each number input should be
-#                    a number between 0 and 1. A PCA1 interval of (0,1)
-#                    along with a PCA2 interval of (0,1) corresponds to the
-#                    full original plot. A PCA1 interval of (0.25,0.75)
-#                    along with a PCA2 interval of (0.25,0.75) corresponds
-#                    to a square selection centered around the middle of
-#                    the plot. The square's height would be 50% of the
-#                    graph's height and the square's width would be 50% of
-#                    the graph's width.
+#       savedPrVisOut: the name of the file where a previous call to prVis was
+#                      stored.
+#       area: vector with in the form of [x_start, x_finish, y_start, y_finish].
+#             x_start, x_finish, y_start, and y_finish should all be between 0
+#             and 1. These values correspond to percentages of the graph from
+#             left to right and bottom to top. [0,1,0,1] specifies the entirety
+#             of the graph. [0,0.5,0.5,1] specifies upper-left quadrant. x_start
+#             must be less than x_finish and y_start must be less than y_finish
 
-addRowNums <- function(np=0,savedPrVisOut,specifyArea=FALSE)
+addRowNums <- function(np=0,area=c(0,1,0,1),savedPrVisOut="lastPrVisOut")
 {
-  pcax <- savedPrVisOut$prout$x[,1:2]
-  if(is.null(row.names(pcax)))
-    row.names(savedPrVisOut$prout$x) <-
-      as.character(1:nrow(savedPrVisOut$prout$x))
+  load(savedPrVisOut)
+  if(is.null(row.names(outputList$prout$x[,1:2])))
+    row.names(outputList$prout$x) <-
+      as.character(1:nrow(outputList$prout$x))
+  pcax <- outputList$prout$x[,1:2]
 
-  if(specifyArea){
+  if(identical(area, c(0,1,0,1))){
     # get boundaries of graph
-    xMin <- min(savedPrVisOut$prout$x[,1])
-    xMax <- max(savedPrVisOut$prout$x[,1])
-    yMin <- min(savedPrVisOut$prout$x[,2])
-    yMax <- max(savedPrVisOut$prout$x[,2])
+    xMin <- min(outputList$prout$x[,1])
+    xMax <- max(outputList$prout$x[,1])
+    yMin <- min(outputList$prout$x[,2])
+    yMax <- max(outputList$prout$x[,2])
     # error checking on inputs
-    xI <- as.numeric(readline(prompt="starting x location (float from 0 to
-                                  1):"))
-    xF <- as.numeric(readline(prompt="ending x location (float from 0 to
-                                   1):"))
-    yI <- as.numeric(readline(prompt="starting y location (float from 0 to
-                                  1):"))
-    yF <- as.numeric(readline(prompt="ending y location (float from 0 to
-                                   1):"))
-    if (is.na(xI)){
-      stop('starting x location must be a number')
-    }
-    if (is.na(xF)){
-      stop('ending x location must be a number')
-    }
-    if (is.na(yI)){
-      stop('starting y location must be a number')
-    }
-    if (is.na(yF)){
-      stop('ending y location must be a number')
-    }
-    if (xI < 0 | xI > 1 | xF < 0 | xF > 1 | xI > xF |
-        yI < 0 | yI > 1 | yF < 0 | yF > 1 | yI > yF){
-      stop('invalid boundaries (must be between 0 and 1, start must be less
-           than finish')
+    xI <- area[1]
+    xF <- area[2]
+    yI <- area[3]
+    yF <- area[4]
+    if (xI < 0 | xI > 1 | xF < 0 | xF > 1 | xI > xF)
+    if (yI < 0 | yI > 1 | yF < 0 | yF > 1 | yI > yF){
+      stop('invalid area boundaries, 0 < x_start < x_finish < 1, 0 < y_start <
+           y_finish < 1. area is in the form of c(x_start,x_finish,y_start,
+                                                  y_finish)')
     }
 
     # scale x interval
@@ -224,144 +215,142 @@ addRowNums <- function(np=0,savedPrVisOut,specifyArea=FALSE)
   }
 }
 
-# intended to produce different grouping methods based on user input;
-# prVis uses the color coding paradigm specified by the factor column (if no
-# factor in the dataset, then no coloring), this function will create a factor
-# column and replace the original factor column in the original data frame (if
-# there is any)
-# If there is no factor column in xy, then the created factor column is placed
-# in the last column. The factor levels are specified by expressions. Each
-# expression accounts for one factor level (one color in the output of the graph)
-# User can enter multiple expressions to produce mutiple levels(labels) of a
-# factor column, but they must be mutually exclusive (don't need to be exhautive,
-# the unlabeled data points will be grouped as "others")
-# Example: if an user wants to highlight the group which contains all people who
-# is male **and** under 25 years old, he or she may want to input in this format:
-# male == 1 * age < 25
-# if the user wants to highlight the group which contains people
-# who is male **or** who is under 25 years old, he or she may want to input in
-# this format:
-# male == 1 + age < 25
+# colorCode: display color coding for user-specified vairables or expressions.
+# Normally called after prVis, produce a new coloring of the same plot produced
+# by prVis.
 # arguments:
-#       xy: data frame, the same argument that passed into the function prVis
-# return value:
-#       A data frame that has a factor column and intended to be passed to prVis
-# Note: I use terms like group, level, label interchangebly, they all mean
-#       represents certain characteristics of the data within the group (or
-#       with same level, same label)
+#          colName: user can specify the column that he or she wants to produce
+#                   the color on. The column specified must be a continuous one.
+#          n: The number of shades used to color code the values of colName.
+#             n and exps should not both be specified at the same time.
+#          exps: expressions that create a label column that produces coloring.
+#                If user specifies colName, he or she cannot provide arguments
+#                for exps, since they are two ways to produce coloring (should
+#                be mutually exclusive). User can supply several expressions,
+#                each one corresponding to a group (a label, a color, a level),
+#                and concatenating by c(). The expression should be mutually
+#                exclusive, since a data point cannot be in two colors.
+#                expression format:
+#                <exp> ::= <subexpression> [(+|*) <subexpression>]
+#                <subexpression> ::= columnname relationalOperator value
+#                Note: * represents logic and, + represents logic or
+#          savedPrVisOut: the file that stores a prVis object
 
-createGroup <- function(xy)
+colorCode <- function(colName="",n=256,exps="", savedPrVisOut="lastPrVisOut",
+cex = 0.5)
 {
-  factorCol <- length(which(sapply(xy, is.factor) == T)) # number of factor cols
-  columnname<-readline(prompt="Please specify the name of the column you created: ")
-  if (factorCol > 0) {
-    if (length(factorCol) > 1) # if there is more than one factor cols, error!
-      stop("The data frame cannot have more than one factor column")
-    # get index of the factor column
-    factorCol <- as.numeric(which(sapply(xy, is.factor) == T))
-    if (colnames(xy)[factorCol] == columnname)#if user specified name exist already
-      stop("Duplicate names")
+  load(savedPrVisOut)
+  xdata <- outputList$gpOut[,1:length(outputList$colName)]
+  plotData <- outputList$prout$x[,1:2]
+  if (colName == "" && exps == "")
+    stop("colName and expressions(exps) not specified")
+  if (colName != "" && exps == "")
+  {
+    if (!colName %in% outputList$colName)
+      stop("The column specified is not a continuous one or not found")
+    else { # do continue color (rainbow)
+      colNum = which(colName == outputList$colName)
+      d <- xdata[,colNum]
+      minVal <- min(d)
+      maxVal <- max(d)
+      diffVal <- maxVal - minVal
+      colorPalette <- rev(rainbow(n,start=0,end=0.7))
+      colorIndexes <- sapply(d, function(x) ((x - minVal) * n) %/% diffVal)
+      plot(plotData, col=colorPalette[colorIndexes])
+    }
   }
-  expressionNum <- 0 # track the expression, later use for error message
-  xy[[columnname]] <- NA # initilize the factor column defined by user
-  hasLabel <- c() # track rows that has already had a label, check for relable
-  repeat { # ask user for multiple expressions
-           # (each expression represent one unique group in the factor column)
-    expressionNum <- expressionNum + 1
-    userIn <- readline(
-          prompt="Your expression(followed by '+/*' for more constraints): ")
-    # delete all white spaces (compress the string)
-    userIn <- gsub(" ", "", userIn, fixed = TRUE)
-    #label is defined by the compressed version of the user input expression
-    labelName <- userIn
-    #userExp contains a vector of constraints (sub-expressions)
-    #userIn now has a vector of +/* operators. Together with userExp,
-    # they form the the whole expression
-    userExp <- unlist(strsplit(userIn, "\\+|\\*"))
-    for (i in 1:length(userExp))
-      userIn <- sub(userExp[i], "", userIn, fixed = T)
-    userIn <- unlist(strsplit(userIn, split="")) #string to vector of characters
-    #number of +/* operators should be one less than the number of constraints
-    if (length(userIn) != length(userExp) - 1)
-      stop (length(userIn)," +/* not match ",length(userExp)," constraints")
-    for (i in 1:length(userExp)) { # solve one expression by solving all constraints
-      # Ex has one constraint but the relational operator is extracted
-      # EX : "Male", "1"
-      Ex <- unlist(strsplit(userExp[i],"(==|>=|<=|>|<|!=)")) #relational ops
-      if (length(Ex) != 2) # Ex should have two components: column name, value
-        stop ("The constraint must follow the format: 'columnName'
-        'relationalOperator' 'value'")
-      else {
-        tmp <- paste("\\b", Ex[1], sep="")
-        tmp <- paste(tmp, "\\b", sep="")
-        columnNum <- grep(tmp, colnames(xy))
-        if (!length(columnNum)) # xy should have the specified column
-          stop("The specified column ",Ex[1]," is not found in the data frame xy")
-      }
-      # restore the relational operator
-      relationalOp <- sub(Ex[1], "", userExp[i], fixed= TRUE)
-      relationalOp <- sub(Ex[2], "", relationalOp, fixed= TRUE)
-      if (columnNum == factorCol) # the user spcified column is the factor col
-      {
-        # check to see if the label specified is in the factor column
-        if (!Ex[2] %in% levels(xy[[columnNum]]))
-          stop ("The label ", Ex[2], " is not in the factor column")
-        # when ecounter operations between labels, only == and != make sense
-        if (!relationalOp %in% c("==", "!="))
-          stop ("Use of the inappropriate operator ", relationalOp)
-        # get the row numbers of data that satisfy the constraint userExp[i]
-        rowBelong <- switch(relationalOp, "==" = which(xy[[columnNum]] == Ex[2]),
-        "!=" = which (xy[[columnNum]] != Ex[2]))
-      }
-      else { # EX[1] is a continuous column, so Ex[2] should be a number
-        val <- as.double(Ex[2])
-        if (is.null(val)||val< min(xy[[columnNum]])||val > max(xy[[columnNum]]))
-          stop("The value ", Ex[2], " is out of the range")
-        # get the row numbers of data that satisfy the constraint userExp[i]
-        rowBelong <- switch(relationalOp, "==" = which(xy[[columnNum]] == val),
-        "!=" = which (xy[[columnNum]] != val),">="= which(xy[[columnNum]]>=val),
-        "<="=which(xy[[columnNum]] <= val), ">" = which (xy[[columnNum]] > val),
-         "<" = which(xy[[columnNum]] < val))
-      }
+  else if(colName != "" && exps != "") # illegal specify both
+    stop("colName for rainbow, exps for createFactor column")
 
-      if (i == 1) # initialize labelData
-        labelData <- rowBelong # labelData has the row numbers of data
-                              # that satisfy the expression, rowBelong has the
-                              # row numbers statisfy the constraint, hasLabel
-                              # has the row numbers satisfy all expressions
-      else {
-        if (userIn[i-1] == "*") # And, get the intersection of the row numbers
-          labelData <- intersect(labelData, rowBelong)
-        else  # Or, get the union
-          labelData <- union(labelData, rowBelong)
-      }
-    } # end for loop
-    # check for overlaps! will cause relabel of certain data that satisfy two or
-    # more expressions. Enforcing mutually exclusiveness between expressions
-    if (length(intersect(labelData, hasLabel)) != 0)
-      stop ("The expression ", expressionNum, " tries to relabel some data,
-      the groups must be mutually exclusive")
-    # gives the label to data that satisfy the expression
-    xy[[columnname]][labelData] <- labelName
-    # update hasLabel to keep track of all data has been labeled
-    hasLabel <- union(labelData, hasLabel)
-    # check if usr wants more levels/groups by providing more expressions
-    # The levels/groups/labels and expressions are one-to-one corresponded
-    # one expression creates one group, there is no intersection between groups
-    moreIn <- readline(prompt="Do you want more levels(y/n): ")
-    if (tolower(moreIn) != 'y')
-      break;
-  } # end repeat
-  if (length(hasLabel) == 0) # no matching data of the expressions
-    stop ("Expression(s) match no data points")
-  # replace all NAs (data that has not yet been labeled) with label "others"
-  xy[[columnname]][-hasLabel] <- "others"
-  if (factorCol != 0) { # xy originally has one factor column, replace that
-    xy[, factorCol] <- xy[[columnname]]
-    xy[[columnname]] <- NULL # delete the column after data is transfered
-    colnames(xy)[factorCol] <- columnname # rename the column
-  }
-  xy[[columnname]] <- as.factor (xy[[columnname]])
-  # return the revised xy
-  xy
+  else { # create a label column with potentially more than one labels
+    numberOfRows <- length(outputList$prout$x[,1])
+    userCol <- rep(NA, numberOfRows) # initialize label column
+    hasY <- !(is.null(outputList$yname))
+    if (hasY) #original dataset has a factor column
+      factorCol <- outputList$yCol
+
+    hasLabel <- c() # track rows that has already had a label, check for relable
+    for (i in 1:length(exps)) {
+      # delete all white spaces (compress the string)
+      exp <- gsub(" ", "", exps[i], fixed = TRUE)
+      labelName <- exp #use the expression as the label name
+      subExp <- unlist(strsplit(exp, "\\+|\\*"))
+      for (m in 1:length(subExp))
+        exp <- sub(subExp[m], "", exp, fixed = T)
+      exp <- unlist(strsplit(exp, split="")) #string to vector of characters
+      #number of +/* operators should be one less than the number of constraints
+      if (length(exp) != length(subExp) - 1)
+        stop (length(exp)," +/* not match ",length(subExp)," constraints")
+      for (j in 1:length(subExp)) { # solve all of an expressions constraints
+        # Ex has one constraint but the relational operator is extracted
+        # EX : "Male", "1"
+        Ex <- unlist(strsplit(subExp[j],"(==|>=|<=|>|<|!=)")) #relational ops
+        if (length(Ex) != 2) # Ex should have two components: column name, value
+          stop ("The constraint must follow the format: 'yourCol'
+          'relationalOperator' 'value'")
+        else {
+          tmp <- paste("\\b", Ex[1], sep="")
+          tmp <- paste(tmp, "\\b", sep="")
+          columnNum <- grep(tmp, outputList$colName)
+          if (!length(columnNum) && (!hasY || tmp != outputList$yname))
+            stop("The specified column ",Ex[1],
+                 " is not found in the data frame xy")
+          # restore the relational operator
+          relationalOp <- sub(Ex[1], "", subExp[j], fixed= TRUE)
+          relationalOp <- sub(Ex[2], "", relationalOp, fixed= TRUE)
+
+          if (hasY && tmp == outputList$yname) # Ex[1] is the factorcol
+          {
+            if (!Ex[2] %in% levels(factorCol))
+              stop ("The label ", Ex[2], " is not in the factor column")
+            # when ecounter operations between labels, only == and != make sense
+            if (!relationalOp %in% c("==", "!="))
+              stop ("Use of the inappropriate operator ", relationalOp)
+            # get the row numbers of data that satisfy the constraint userExp[i]
+            rowBelong <- switch(relationalOp, "==" = which(factorCol == Ex[2]),
+            "!=" = which (factorCol != Ex[2]))
+          }
+          else { # EX[1] is a continuous column, so Ex[2] should be a number
+            val <- as.double(Ex[2])
+
+            if (is.null(val)||val< min(xdata[[columnNum]])
+                ||val > max(xdata[[columnNum]]))
+              stop("The value ", Ex[2], " is out of the range")
+            # get the row numbers of data that satisfy the constraint userExp[i]
+            rowBelong <- switch(relationalOp,
+              "==" = which(xdata[[columnNum]] == val),
+              "!=" = which (xy[[columnNum]] != val),
+              ">="= which(xdata[[columnNum]]>=val),
+              "<="=which(xdata[[columnNum]] <= val),
+              ">" = which (xdata[[columnNum]] > val),
+               "<" = which(xdata[[columnNum]] < val))
+          }
+        }
+
+        if (j == 1) # initialize labelData
+          labelData <- rowBelong
+        else {
+          if (exp[j-1] == "*") # And, get the intersection of the row numbers
+            labelData <- intersect(labelData, rowBelong)
+          else  # Or, get the union
+            labelData <- union(labelData, rowBelong)
+        }
+      } # end for loop
+      # check for overlaps! will cause relabel of certain data that satisfy more 
+      # than two expressions. Enforcing mutual exclusivity between expressions
+      if (length(intersect(labelData, hasLabel)) != 0)
+        stop ("The expression ", i, " tries to relabel some data,
+        the groups must be mutually exclusive")
+      # gives the label to data that satisfy the expression
+      userCol[labelData] <- labelName
+      # update hasLabel to keep track of all data has been labeled
+      hasLabel <- union(labelData, hasLabel)
+   } # end big for loop
+   if (length(hasLabel) == 0) # no matching data of the expressions
+     stop ("Expression(s) match no data points")
+
+   userCol[-hasLabel] <- "others"
+   userCol <- as.factor(userCol)
+   plot (plotData, col=userCol, pch=15, cex=cex)
+ } # end createCol
 }
