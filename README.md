@@ -20,7 +20,8 @@ Such techniques are useful in general:
    If the data do seem to cluster fairly well, with each class in mostly
    nonoverlapping clusters, this may indicate that we
    can predict well using only the first two components
-   of the transformed data.
+   of the transformed data.  (Though a method for visualizing more than
+   two is also featured.)
 
 Thus such tools are useful for both unsupervised and supervised
 learning.
@@ -32,12 +33,17 @@ variables, especially categorical ones?
 
 **Usage:**
 
-The main function in this package is **prVis()**, which provides 
-two-dimensional visualizations and provides dimension reduction in more
-than two dimensions.  Users have the option to display using
- color coded labels. 
+The main function in this package is **prVis()**, which provides
+two-dimensional visualizations.  Users have the option to display using
+color coding. 
 
-*Example:* Swiss Roll data derived from [Dinoj Surendran's site](http://people.cs.uchicago.edu/~dinoj/manifold/swissroll.html).
+*Example:* Swiss Roll data derived from [Dinoj Surendran's
+site](http://people.cs.uchicago.edu/~dinoj/manifold/swissroll.html).
+This is simulated data that starts with four two-dimensional components
+but then undergoes a strongly nonlinear transformation into three
+dimensions.  The question for any nonlinear visualization tool is then,
+can the tool discern the four-component origin of the data?
+
 The preprocessed data can be downloaded [here](https://github.com/matloff/prVis/blob/master/inst/data/SwissRoll/Surendran.txt)
 
 ``` r
