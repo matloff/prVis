@@ -41,7 +41,7 @@ colorCode(colName="",n=256,exps="", savedPrVisOut="lastPrVisOut", cex = 0.5)
   \item{cex}{Controls the point size for plotting.}
   \item{alpha}{ a number between 0 and 1 that that specifies the level of 
      transparency for alpha blending. If alpha is specified then ggplot2 will
-     be used to create the plot.
+     be used to create the plot.}
   \item{np}{Number of points to add row numbers to in the plot. If no value is
      provided, rownumbers will be added to all datapoints in the selection}
   \item{savedPrVisOut}{the name of the file where a previous call to prVis was
