@@ -135,11 +135,13 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
     }
   }
   if (saveOutputs != ""){
-    if (labels && is.factor(ydata)) #xy has factor column, colName stores the name for all continuou
-                #yname stores the name for the factor col
+    # ensure that data is saved correctly for continuous columns
+    if (labels && is.factor(ydata)) 
       outputList <- list(gpOut=polyMat,prout=x.pca,
         colName=colnames(xy[, -ncxy]), yCol = ydata, yname=colnames(xy)[ncxy])
-    else # xy has no factor column
+        # yCol and yname are the names of the factor column
+    # if ydata is not a factor
+    else 
       outputList <- list(gpOut=polyMat,prout=x.pca, colName=colnames(xy))
     save(outputList,file=saveOutputs)
   }
@@ -219,11 +221,8 @@ addRowNums <- function(np=0,area=c(0,1,0,1),savedPrVisOut="lastPrVisOut")
 # arguments:
 #          colName: user can specify the column that he or she wants to produce
 #                   the color on. The column specified must be a continuous one.
-#                   If you want to produce the coloring based on a factor column,
-#                   prVis has already had the functionality.
-#          n: rainbow parameter. We produce the coloring of a continuous variable
-#             using function rainbow, and n is passed in to the function as an
-#             option.
+#          n: The number of shades used to color code the values of colName.
+#             n and exps should not both be specified at the same time.
 #          exps: expressions that create a label column that produces coloring.
 #                If user specifies colName, he or she cannot provide arguments
 #                for exps, since they are two ways to produce coloring (should
@@ -282,7 +281,7 @@ cex = 0.5)
       #number of +/* operators should be one less than the number of constraints
       if (length(exp) != length(subExp) - 1)
         stop (length(exp)," +/* not match ",length(subExp)," constraints")
-      for (j in 1:length(subExp)) { # solve one expression by solving all constraints
+      for (j in 1:length(subExp)) { # solve all of an expressions constraints
         # Ex has one constraint but the relational operator is extracted
         # EX : "Male", "1"
         Ex <- unlist(strsplit(subExp[j],"(==|>=|<=|>|<|!=)")) #relational ops
@@ -294,7 +293,8 @@ cex = 0.5)
           tmp <- paste(tmp, "\\b", sep="")
           columnNum <- grep(tmp, outputList$colName)
           if (!length(columnNum) && (!hasY || tmp != outputList$yname))
-            stop("The specified column ",Ex[1]," is not found in the data frame xy")
+            stop("The specified column ",Ex[1],
+                 " is not found in the data frame xy")
           # restore the relational operator
           relationalOp <- sub(Ex[1], "", subExp[j], fixed= TRUE)
           relationalOp <- sub(Ex[2], "", relationalOp, fixed= TRUE)
@@ -313,13 +313,17 @@ cex = 0.5)
           else { # EX[1] is a continuous column, so Ex[2] should be a number
             val <- as.double(Ex[2])
 
-            if (is.null(val)||val< min(xdata[[columnNum]])||val > max(xdata[[columnNum]]))
+            if (is.null(val)||val< min(xdata[[columnNum]])
+                ||val > max(xdata[[columnNum]]))
               stop("The value ", Ex[2], " is out of the range")
             # get the row numbers of data that satisfy the constraint userExp[i]
-            rowBelong <- switch(relationalOp, "==" = which(xdata[[columnNum]] == val),
-            "!=" = which (xy[[columnNum]] != val),">="= which(xdata[[columnNum]]>=val),
-            "<="=which(xdata[[columnNum]] <= val), ">" = which (xdata[[columnNum]] > val),
-             "<" = which(xdata[[columnNum]] < val))
+            rowBelong <- switch(relationalOp,
+              "==" = which(xdata[[columnNum]] == val),
+              "!=" = which (xy[[columnNum]] != val),
+              ">="= which(xdata[[columnNum]]>=val),
+              "<="=which(xdata[[columnNum]] <= val),
+              ">" = which (xdata[[columnNum]] > val),
+               "<" = which(xdata[[columnNum]] < val))
           }
         }
 
@@ -332,8 +336,8 @@ cex = 0.5)
             labelData <- union(labelData, rowBelong)
         }
       } # end for loop
-      # check for overlaps! will cause relabel of certain data that satisfy two or
-      # more expressions. Enforcing mutually exclusiveness between expressions
+      # check for overlaps! will cause relabel of certain data that satisfy more 
+      # than two expressions. Enforcing mutual exclusivity between expressions
       if (length(intersect(labelData, hasLabel)) != 0)
         stop ("The expression ", i, " tries to relabel some data,
         the groups must be mutually exclusive")
