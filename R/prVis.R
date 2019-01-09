@@ -236,33 +236,41 @@ addRowNums <- function(np=0,area=c(0,1,0,1),savedPrVisOut="lastPrVisOut")
 #                Note: * represents logic and, + represents logic or
 #          savedPrVisOut: the file that stores a prVis object
 
-colorCode <- function(colName="",n=256,exps="", savedPrVisOut="lastPrVisOut",
+colorCode <- function(colName="",colorVec=c(), n=256,exps="", savedPrVisOut="lastPrVisOut",
 cex = 0.5)
 {
   load(savedPrVisOut)
   xdata <- outputList$gpOut[,1:length(outputList$colName)]
   plotData <- outputList$prout$x[,1:2]
-  if (colName == "" && exps == "")
-    stop("colName and expressions(exps) not specified")
-  if (colName != "" && exps == "")
-  {
-    if (!colName %in% outputList$colName)
-      stop("The column specified is not a continuous one or not found")
-    else { # do continue color (rainbow)
-      colNum = which(colName == outputList$colName)
-      d <- xdata[,colNum]
-      minVal <- min(d)
-      maxVal <- max(d)
-      diffVal <- maxVal - minVal
-      colorPalette <- rev(rainbow(n,start=0,end=0.7))
-      colorIndexes <- sapply(d, function(x) ((x - minVal) * n) %/% diffVal)
-      plot(plotData, col=colorPalette[colorIndexes])
-    }
-  }
-  else if(colName != "" && exps != "") # illegal specify both
-    stop("colName for rainbow, exps for createFactor column")
+  isColorDeclared <- xor(!is.null(colorVec),colName != "")
 
-  else { # create a label column with potentially more than one labels
+  # cases covered by continColor: 
+  if (isColorDeclared && exps == "")
+  {
+    if (!is.null(colorVec)) # colorVec spcified 
+      d <- colorVec
+    else # colName spcified 
+    {
+      if (!colName %in% outputList$colName) # colName is not in the dataframe
+        stop("The column specified is not a continuous one or not found")
+      else # normal 
+      {
+        colNum = which(colName == outputList$colName)
+        d <- xdata[,colNum] 
+      }
+
+    }
+    minVal <- min(d)
+    maxVal <- max(d)
+    diffVal <- maxVal - minVal
+    colorPalette <- rev(rainbow(n,start=0,end=0.7))
+    colorIndexes <- sapply(d, function(x) ((x - minVal) * n) %/% diffVal)
+    plot(plotData, col=colorPalette[colorIndexes])
+  }
+
+  else if (is.null(colorVec) && colName == "" && exps != "")
+  {
+    # create a label column with potentially more than one labels
     numberOfRows <- length(outputList$prout$x[,1])
     userCol <- rep(NA, numberOfRows) # initialize label column
     hasY <- !(is.null(outputList$yname))
@@ -352,5 +360,14 @@ cex = 0.5)
    userCol[-hasLabel] <- "others"
    userCol <- as.factor(userCol)
    plot (plotData, col=userCol, pch=15, cex=cex)
- } # end createCol
+  } # end createCol
+
+  else
+  {
+    if (colName == "" && exps == "" && is.null(colorVec)) # spcified nothing 
+      stop("colName, expressions(exps), or colorVec must be specified")
+
+    else 
+      stop ("colorVec, colName and exps should not be specified at the same time")
+  }
 }
