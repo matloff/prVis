@@ -1,8 +1,8 @@
 \name{prVis}
 \alias{prVis}
 \alias{addRowNums}
-
-\title{Polynomial-Based Manifold Exploration }
+\alias{colorCode}
+\title{Polynomial-Based Manifold Exploration}
 
 \description{
 Polynomial-based alternative to t-SNE, UMAP etc.}
@@ -39,7 +39,7 @@ colorCode(colName="",n=256,exps="", savedPrVisOut="lastPrVisOut", cex = 0.5)
   \item{saveOutputs}{name of the file where prVis object will be saved. Use the
      empty string in order to not save results}
   \item{cex}{Controls the point size for plotting.}
-  \item{alpha}{ a number between 0 and 1 that that specifies the level of 
+  \item{alpha}{ a number between 0 and 1 that that specifies the level of
      transparency for alpha blending. If alpha is specified then ggplot2 will
      be used to create the plot.}
   \item{np}{Number of points to add row numbers to in the plot. If no value is

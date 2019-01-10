@@ -136,12 +136,12 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
   }
   if (saveOutputs != ""){
     # ensure that data is saved correctly for continuous columns
-    if (labels && is.factor(ydata)) 
+    if (labels && is.factor(ydata))
       outputList <- list(gpOut=polyMat,prout=x.pca,
         colName=colnames(xy[, -ncxy]), yCol = ydata, yname=colnames(xy)[ncxy])
         # yCol and yname are the names of the factor column
     # if ydata is not a factor
-    else 
+    else
       outputList <- list(gpOut=polyMat,prout=x.pca, colName=colnames(xy))
     save(outputList,file=saveOutputs)
   }
@@ -236,8 +236,8 @@ addRowNums <- function(np=0,area=c(0,1,0,1),savedPrVisOut="lastPrVisOut")
 #                Note: * represents logic and, + represents logic or
 #          savedPrVisOut: the file that stores a prVis object
 
-colorCode <- function(colName="",colorVec=c(), n=256,exps="", savedPrVisOut="lastPrVisOut",
-cex = 0.5)
+colorCode <- function(colName="",colorVec=c(), n=256,exps="",
+savedPrVisOut="lastPrVisOut", cex = 0.5)
 {
   load(savedPrVisOut)
   xdata <- outputList$gpOut[,1:length(outputList$colName)]
@@ -247,16 +247,16 @@ cex = 0.5)
   # cases covered by continColor: 
   if (isColorDeclared && exps == "")
   {
-    if (!is.null(colorVec)) # colorVec spcified 
+    if (!is.null(colorVec)) # colorVec spcified
       d <- colorVec
-    else # colName spcified 
+    else # colName spcified
     {
       if (!colName %in% outputList$colName) # colName is not in the dataframe
         stop("The column specified is not a continuous one or not found")
-      else # normal 
+      else # normal
       {
         colNum = which(colName == outputList$colName)
-        d <- xdata[,colNum] 
+        d <- xdata[,colNum]
       }
 
     }
@@ -344,7 +344,7 @@ cex = 0.5)
             labelData <- union(labelData, rowBelong)
         }
       } # end for loop
-      # check for overlaps! will cause relabel of certain data that satisfy more 
+      # check for overlaps! will cause relabel of certain data that satisfy more
       # than two expressions. Enforcing mutual exclusivity between expressions
       if (length(intersect(labelData, hasLabel)) != 0)
         stop ("The expression ", i, " tries to relabel some data,
@@ -364,10 +364,10 @@ cex = 0.5)
 
   else
   {
-    if (colName == "" && exps == "" && is.null(colorVec)) # spcified nothing 
+    if (colName == "" && exps == "" && is.null(colorVec)) # spcified nothing
       stop("colName, expressions(exps), or colorVec must be specified")
 
-    else 
+    else
       stop ("colorVec, colName and exps should not be specified at the same time")
   }
 }
