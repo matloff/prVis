@@ -368,6 +368,7 @@ savedPrVisOut="lastPrVisOut", cex = 0.5)
       stop("colName, expressions(exps), or colorVec must be specified")
 
     else
-      stop ("colorVec, colName and exps should not be specified at the same time")
+      stop ("colorVec, colName and exps should not be specified 
+            at the same time")
   }
 }
