@@ -221,6 +221,10 @@ addRowNums <- function(np=0,area=c(0,1,0,1),savedPrVisOut="lastPrVisOut")
 # arguments:
 #          colName: user can specify the column that he or she wants to produce
 #                   the color on. The column specified must be a continuous one.
+#          colorVec: a column of continuous data, with the first entry in the
+#                    vector corresponding to the first row in the dataframe
+#                    used in savedPrVisOut. Can be used when wanting to color
+#                    by a column that was not included in the prVis call.
 #          n: The number of shades used to color code the values of colName.
 #             n and exps should not both be specified at the same time.
 #          exps: expressions that create a label column that produces coloring.
@@ -236,7 +240,7 @@ addRowNums <- function(np=0,area=c(0,1,0,1),savedPrVisOut="lastPrVisOut")
 #                Note: * represents logic and, + represents logic or
 #          savedPrVisOut: the file that stores a prVis object
 
-colorCode <- function(colName="",colorVec=c(), n=256,exps="",
+colorCode <- function(colName="",colorVec=NULL, n=256,exps="",
 savedPrVisOut="lastPrVisOut", cex = 0.5)
 {
   load(savedPrVisOut)
