@@ -244,11 +244,11 @@ colorCode <- function(colName="",colorVec=NULL, n=256,exps="",
 savedPrVisOut="lastPrVisOut", cex = 0.5)
 {
   load(savedPrVisOut)
-  xdata <- outputList$gpOut[,1:length(outputList$colName)]
+  xdata <- as.data.frame(outputList$gpOut[,1:length(outputList$colName)])
   plotData <- outputList$prout$x[,1:2]
   isColorDeclared <- xor(!is.null(colorVec),colName != "")
 
-  # cases covered by continColor: 
+  # cases covered by continColor:
   if (isColorDeclared && exps == "")
   {
     if (!is.null(colorVec)) # colorVec spcified
@@ -301,8 +301,7 @@ savedPrVisOut="lastPrVisOut", cex = 0.5)
           stop ("The constraint must follow the format: 'yourCol'
           'relationalOperator' 'value'")
         else {
-          tmp <- paste("\\b", Ex[1], sep="")
-          tmp <- paste(tmp, "\\b", sep="")
+          tmp <- trimws(Ex[1])
           columnNum <- grep(tmp, outputList$colName)
           if (!length(columnNum) && (!hasY || tmp != outputList$yname))
             stop("The specified column ",Ex[1],
@@ -325,7 +324,7 @@ savedPrVisOut="lastPrVisOut", cex = 0.5)
           else { # EX[1] is a continuous column, so Ex[2] should be a number
             val <- as.double(Ex[2])
 
-            if (is.null(val)||val< min(xdata[[columnNum]])
+            if (is.null(val)|| val< min(xdata[[columnNum]])
                 ||val > max(xdata[[columnNum]]))
               stop("The value ", Ex[2], " is out of the range")
             # get the row numbers of data that satisfy the constraint userExp[i]
@@ -372,7 +371,7 @@ savedPrVisOut="lastPrVisOut", cex = 0.5)
       stop("colName, expressions(exps), or colorVec must be specified")
 
     else
-      stop ("colorVec, colName and exps should not be specified 
+      stop ("colorVec, colName and exps should not be specified
             at the same time")
   }
 }
