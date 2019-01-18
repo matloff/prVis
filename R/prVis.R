@@ -124,7 +124,8 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
   # parallel coordinate graphing
   if (parDims > 0) {
     require(cdparcoord)
-    freqparcoord(x.pca$x, m=5, dispcols=1:parDims)
+    freqparcoord(x.pca$x,5,1:parDims,method="maxdens")
+    return()
   }
 
   if (alpha) {
