@@ -1,7 +1,5 @@
 \name{prVis}
 \alias{prVis}
-\alias{addRowNums}
-\alias{colorCode}
 \title{Polynomial-Based Manifold Exploration}
 
 \description{
