@@ -244,7 +244,7 @@ colorCode <- function(colName="",colorVec=NULL, n=256,exps="",
 savedPrVisOut="lastPrVisOut", cex = 0.5)
 {
   load(savedPrVisOut)
-  xdata <- as.data.frame(outputList$gpOut[,1:length(outputList$colName)])
+  xdata <- outputList$gpOut[,1:length(outputList$colName)]
   plotData <- outputList$prout$x[,1:2]
   isColorDeclared <- xor(!is.null(colorVec),colName != "")
 
@@ -274,6 +274,7 @@ savedPrVisOut="lastPrVisOut", cex = 0.5)
 
   else if (is.null(colorVec) && colName == "" && exps != "")
   {
+    xdata <- as.data.frame(xdata)
     # create a label column with potentially more than one labels
     numberOfRows <- length(outputList$prout$x[,1])
     userCol <- rep(NA, numberOfRows) # initialize label column
