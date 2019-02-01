@@ -144,3 +144,6 @@ Default: outliersRemoved=0
 
 *(3)* Alpha Blending: User can specify the alpha blending value
 (require package ggplot2).
+
+*(4)* Big Data: For large datasets, user can read file as a big matrix to increase the speed of using prVis. To save into local disk, use backingfile = "/file/path"
+(require package bigmemory)
