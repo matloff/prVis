@@ -32,6 +32,7 @@
 #                     percentage of the data will be removed
 #    pcaMethod: specify how eigenvectors will be calculated, using
 #               prcomp or RSpectra
+#    bigData: use bigmemory package to store matrices if specified as true
 #    saveOutputs: specify the name of the file where the results will be saved.
 #                 default file is 'lastPrVisOut'. set to the empty string to
 #                 not save results.
@@ -41,12 +42,18 @@
 #           create the plot
 prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
    scale=FALSE,nSubSam=0,nIntervals=NULL,
-   outliersRemoved=0,pcaMethod="prcomp",
+   outliersRemoved=0,pcaMethod="prcomp",bigData=FALSE,
    saveOutputs="lastPrVisOut",cex=0.5, alpha=0)
 {
   # safety check
   if (!pcaMethod %in% c('prcomp','RSpectra'))
     stop("pcaMethod should be either NULL, prcomp, or RSpectra")
+
+  # use bigmemory if user specifies bigData
+  if(bigData){
+    xymat <- as.big.matrix(xy)
+    xy <- xymat[,]
+  }
 
   nrxy <- nrow(xy)
   ncxy <- ncol(xy)
@@ -83,7 +90,12 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
     xdata <- xy[,-ncxy, drop=FALSE]
   } else xdata <- xy
 
+  # specify xdata as big matrix if bigData specified
   xdata <- as.matrix(xdata)
+  if(bigData){
+    xdata <- as.big.matrix(xdata)
+    xdata <- xdata[,]
+  }
   polyMat <- getPoly(xdata, deg)$xdata
   if (pcaMethod == "prcomp") {
     x.pca <- prcomp(polyMat,center=TRUE)

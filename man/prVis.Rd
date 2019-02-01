@@ -8,7 +8,7 @@ Polynomial-based alternative to t-SNE, UMAP etc.}
 \usage{
 prVis(xy, labels = FALSE, yColumn = ncol (xy), deg = 2, scale = FALSE,
 nSubSam = 0, nIntervals = NULL, outliersRemoved = 0, pcaMethod = "prcomp",
-saveOutputs="lastPrVisOut", cex = 0.5, alpha=0)
+,bigData = FALSE, saveOutputs="lastPrVisOut", cex = 0.5, alpha=0)
 addRowNums(np, savedPrVisOut, specifyArea = FALSE)
 colorCode(colName="",n=256,exps="", savedPrVisOut="lastPrVisOut", cex = 0.5)
 }
@@ -34,6 +34,8 @@ colorCode(colName="",n=256,exps="", savedPrVisOut="lastPrVisOut", cex = 0.5)
      with the largest mahalanobis distances)}
   \item{pcaMethod}{A string that specifies the method of eigenvector
      computation, prcomp or RSpectra}
+  \item{bigData}{a boolean that specifies whether dataframe should be processed
+     using bigmemory package. data will be stored using as.big.matrix}
   \item{saveOutputs}{name of the file where prVis object will be saved. Use the
      empty string in order to not save results}
   \item{cex}{Controls the point size for plotting.}
