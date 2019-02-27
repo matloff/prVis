@@ -91,12 +91,13 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
   } else xdata <- xy
 
   # specify xdata as big matrix if bigData specified
-  xdata <- as.matrix(xdata)
+ # xdata <- as.matrix(xdata)
+  polyMat <- as.matrix(getPoly(xdata, deg)$xdata)
+  
   if(bigData){
-    xdata <- as.big.matrix(xdata)
-    xdata <- xdata[,]
+    polyMat<- as.big.matrix(polyMat)
+    polyMat <-polyMat[,]
   }
-  polyMat <- getPoly(xdata, deg)$xdata
   if (pcaMethod == "prcomp") {
     x.pca <- prcomp(polyMat,center=TRUE)
     xdata <- x.pca$x[,1:2]
