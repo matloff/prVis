@@ -1,7 +1,7 @@
 # https://www.kaggle.com/uciml/breast-cancer-wisconsin-data
 library(umap)
 library(tsne)
-BC <- read.csv("~/downloads/breastCancer.csv")
+BC <- read.csv("~/desktop/breastCancer.csv")
 BC <- BC[, -1] #id column excluded
 BC <- BC[, -32] #blank column excluded
 
