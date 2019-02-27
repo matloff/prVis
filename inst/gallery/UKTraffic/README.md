@@ -1,6 +1,6 @@
 ## Data
 The dataset collects the total volume of traffic on the stretch of road for the
-whole year in Cardiff, UK. 
+whole year in Cardiff, UK.
 Data can be found at [here](http://www.dft.gov.uk/traffic-counts/download.php).
 ## Graphs
 
@@ -10,8 +10,8 @@ All of the graphs show great separation between groups. Further, if we call the
 utility function addRowNums inside the prVis package, we can see some
 interesting trends here.
 ```r
-a <- prVis  (dataset, labels = T, saveOutput = T)
-addRowNums(40, a) # highlighting 40 rows of the dataset, and printing out
+prVis  (dataset, labels = T)
+addRowNums(40) # highlighting 40 rows of the dataset, and printing out
                   # the line number highlighted
 ```
 ![](Cardiffwithnums.png)
