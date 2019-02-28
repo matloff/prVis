@@ -50,10 +50,10 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
     stop("pcaMethod should be either NULL, prcomp, or RSpectra")
 
   # use bigmemory if user specifies bigData
-  if(bigData){
-    xymat <- as.big.matrix(xy)
-    xy <- xymat[,]
-  }
+ # if(bigData){
+  #  xymat <- as.big.matrix(xy)
+  #  xy <- xymat[,]
+#  }
 
   nrxy <- nrow(xy)
   ncxy <- ncol(xy)
@@ -95,6 +95,7 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
   polyMat <- as.matrix(getPoly(xdata, deg)$xdata)
   
   if(bigData){
+    require(bigmemory)
     polyMat<- as.big.matrix(polyMat)
     polyMat <-polyMat[,]
   }
