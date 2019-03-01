@@ -10,7 +10,7 @@ prVis(d[-8])
 # with labels
 prVis(d,yColumn=8,labels=TRUE, nIntervals=30)
 # see continuous colors
-continColors(8)
+colorCode(colorVec=d[,8])
 
 umapResults <- umap(d[-8])
 # without labels
