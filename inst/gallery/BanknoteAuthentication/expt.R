@@ -11,9 +11,9 @@ umapResults <- umap(d)
 tsneResults <- tsne(d)
 
 # graph prVis
-prVis(d,saveOutputs=FALSE,labels=FALSE)
+prVis(d,labels=FALSE)
 # with labels
-prVis(data,saveOutputs=FALSE,labels=TRUE)
+prVis(data,labels=TRUE)
 
 # graph umap
 plot(umapResults)
