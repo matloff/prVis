@@ -1,7 +1,7 @@
 # https://www.kaggle.com/mlg-ulb/creditcardfraud
 library(umap)
 library(tsne)
-CCF <- read.csv("~/desktop/big_data/creditcard.csv")
+CCF <- read.csv("~/desktop/creditcard.csv")
 CCF[, ncol(CCF)] <- as.factor(CCF[, ncol(CCF)])
 length(which(CCF$Class == "1")) #number of fruads
 # get same number of frauds/non-frauds, since # of frauds is little compared to 
@@ -13,6 +13,7 @@ prVis (CCFsub[, -1], labels = T, outliersRemoved = 10)
 prVis (CCFsub[, -1], labels = T, outliersRemoved = 100)
 prVis (CCFsub, labels = T) # with time column
 
+# incorporate the time data 
 timeVector <- CCF[ ,1]
 colnames(CCF)[1] <- "timeNeed" 
 CCF[, 1] <- rep(0, nrow(CCF))

@@ -1,6 +1,5 @@
-setwd("yourdirectory")
-myTableLeicester<-read.csv("~/Leicester.csv")
-summary(myTableLeicester)
+myTableCardiff<-read.csv("~/desktop/Cardiff.csv")
+summary(myTableCardiff)
 col_headings <- c("year","cp", "estimationmethod", "estimationmethoddetailed", 
                   "region", "localauthority","road","roadcategory","easting",
                   "northing","startjunction","endjunction","linklengthmiles",
@@ -8,20 +7,20 @@ col_headings <- c("year","cp", "estimationmethod", "estimationmethoddetailed",
                   "lightgoodsvehicles","v2axlerigidhgv","v3axlerigidhgv",
                   "v4or5axlerigidhgv","v3or4axleartichgv","v5axleartichgv",
                   "v6ormoreaxleartichgv","allhgvs","allmotorvehicles")
-myTableLeicester
-names(myTableLeicester) <- col_headings
-attach(myTableLeicester)
+myTableCardiff
+names(myTableCardiff) <- col_headings
+attach(myTableCardiff)
 
-myTableLeicester$routes <- paste(myTableLeicester$startjunction,
-                                 myTableLeicester$endjunction)
-as.data.frame(table(myTableLeicester$routes))
+myTableCardiff$routes <- paste(myTableCardiff$startjunction,
+                               myTableCardiff$endjunction)
+as.data.frame(table(myTableCardiff$routes))
 
-busescoaches <- myTableLeicester$busescoaches
-linklengthmiles <- myTableLeicester$linklengthmiles
+busescoaches <- myTableCardiff$busescoaches
+linklengthmiles <- myTableCardiff$linklengthmiles
 frequency=busescoaches/linklengthmiles
 dataset<-data.frame(busescoaches,linklengthmiles,frequency)
 attach(dataset)
-alldata<-data.frame(myTableLeicester$routes,busescoaches,linklengthmiles,
+alldata<-data.frame(myTableCardiff$routes,busescoaches,linklengthmiles,
                     frequency)
 attach(alldata)
 
@@ -57,7 +56,7 @@ a <- prVis  (dataset, labels = T, saveOutput = T)
 #sometimes for some unknown reason, x.pca.prout$x has no row names, this line
 #make up to that deficit
 row.names(a$prout$x) <- as.character(1:nrow(a$prout$x))
-addRowNums(16, a)
+addRowNums(16)
 
 library("umap")
 z <- umap(dataset[,-4])

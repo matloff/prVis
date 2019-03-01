@@ -6,7 +6,7 @@ wb <- wb[,c(2,5,6,7,13,15)]
 # lots of NA values, just use complete cases
 wbcc <- wb[complete.cases(wb),]
 
-wbcc1 <- factorsToDummies(wbcc)
+# wbcc1 <- factorsToDummies(wbcc)
 prVis(wbcc1)
 plot(uwot:::umap(wbcc1))
 
