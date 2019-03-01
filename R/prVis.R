@@ -94,11 +94,11 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
  # xdata <- as.matrix(xdata)
   polyMat <- as.matrix(getPoly(xdata, deg)$xdata)
   
-  if(bigData){
-    require(bigmemory)
-    polyMat<- as.big.matrix(polyMat)
-    polyMat <-polyMat[,]
-  }
+ # if(bigData){
+ #  require(bigmemory)
+ #   polyMat<- as.big.matrix(polyMat)
+ #  polyMat <-polyMat[,]
+ # }
   if (pcaMethod == "prcomp") {
     x.pca <- prcomp(polyMat,center=TRUE)
     xdata <- x.pca$x[,1:2]
