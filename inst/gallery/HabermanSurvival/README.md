@@ -12,6 +12,7 @@ that we may need more than two dimensions to accurately predict on this
 problem, or that the information provided is not directly correlated with the
 classes that we are predicting.
 
+
 ## prVis without labels
 ![prVis without labels](prVis.png)
 
