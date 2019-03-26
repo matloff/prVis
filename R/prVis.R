@@ -48,18 +48,21 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
   # safety check
   if (!pcaMethod %in% c('prcomp','RSpectra'))
     stop("pcaMethod should be either NULL, prcomp, or RSpectra")
-
+  if (yColumn > ncol(xy) || yColumn <= 0)
+    stop("The column specified is out of range")
+  if(outliersRemoved > 100)
+    stop("This is percentage-based (enter number between 0 to 100)")
+#=======================data preprocessing stage========================
   nrxy <- nrow(xy)
   ncxy <- ncol(xy)
-  if (labels) {
-    if (yColumn > ncol(xy) || yColumn <= 0)
-      stop("The column specified is out of range")
-    tmp <- xy[, ncxy]
-    xy[, ncxy] <- xy[, yColumn]
-    # swapping the last column with the user-specified column
-    xy[, yColumn] <- tmp
-
+  # yColumn option
+  if (labels && yColumn != ncxy) {
+    # swapping values 
+    xy[,c(yColumn, ncxy)] <- xy[,c(ncxy, yColumn)]
+    # swapping column names 
+    colnames(xy)[c(yColumn, ncxy)] <- colnames(xy)[c(ncxy, yColumn)]
   }
+  # scale option 
   rns <- row.names(xy)
   if (scale) {
     if (labels) {
@@ -67,12 +70,13 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
     } else xy <- scale(xy)
     row.names(xy) <- rns
   }
-
+  # nSubSam option 
   if (nSubSam < nrxy && nSubSam > 0)
     xy <- xy[sample(1:nrxy,nSubSam),]
-
+  # nIntervals option
   if (labels) {
     ydata <- xy[,ncxy]
+    yName <- colnames(ydata)
     if (is.null(nIntervals) && !is.factor(ydata))
       stop('Y must be a factor for classif.; set nIntervals for regress.')
     if (!is.null(nIntervals)) {
@@ -83,10 +87,10 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
     }
     xdata <- xy[,-ncxy, drop=FALSE]
   } else xdata <- xy
-  remove(xy) # clean xy from mem since xy is not needed any more
+  xName <- colnames(xdata)
+  remove(xy)
 
-  # specify xdata as big matrix if bigData specified
- # xdata <- as.matrix(xdata)
+#=====================polynomial expansion + PCA========================
   polyMat <- as.matrix(getPoly(xdata, deg)$xdata)
 
   if (pcaMethod == "prcomp") {
@@ -101,25 +105,25 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
     colnames(xdata) <- c("PC1","PC2")
   }
 
-  if (outliersRemoved > 0 && outliersRemoved <= nrow(xdata)){
-    # percentage based outlier removal
-    if (outliersRemoved < 1){
-      outliersRemoved = floor(outliersRemoved * nrow(xdata))
+  if (outliersRemoved > 0 && outliersRemoved < 100){
+    # remove outliers by class 
+    if (labels){     if (labels) names(ydata) <- 1:nrow(xdata)}
+    else {
+      # percentage based outlier removal
+      outliersRemoved = floor(outliersRemoved * nrow(xdata) / 100)
+      # calculate mahalanobis distances for each data point
+      distances <- mahalanobis(xdata,colMeans(xdata),var(xdata))
+      # find which row the max distances correspond to
+      rownames(xdata) <- 1:nrow(xdata)
+      names(distances) <- rownames(xdata)
+      sortedDistances <- sort(distances, decreasing=TRUE)
+      outliers <- names(sortedDistances)[0:outliersRemoved]
+      # remove outliers
+      xdata <- xdata[!rownames(xdata) %in% outliers,]
     }
-    # calculate mahalanobis distances for each data point
-    xdataCov <- var(xdata)
-    distances <- mahalanobis(xdata,colMeans(xdata),xdataCov)
-    # find which row the max distances correspond to
-    rownames(xdata) <- 1:nrow(xdata)
-    if (labels) names(ydata) <- 1:nrow(xdata)
-    names(distances) <- rownames(xdata)
-    sortedDistances <- sort(distances, decreasing=TRUE)
-    outliers <- names(sortedDistances)[1:outliersRemoved]
-    # remove outliers
-    xdata <- xdata[!rownames(xdata) %in% outliers,]
-    if (labels) ydata <- ydata[!names(ydata) %in% outliers]
   }
 
+#=====================producing plot + saving output====================
   if (alpha) {
     require(ggplot2)
     if (labels)  {
@@ -139,14 +143,11 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
     }
   }
   if (saveOutputs != ""){
-    # ensure that data is saved correctly for continuous columns
-    if (labels && is.factor(ydata))
+    if (labels)
       outputList <- list(gpOut=polyMat,prout=x.pca,
-        colName=colnames(xy[, -ncxy]), yCol = ydata, yname=colnames(xy)[ncxy])
-        # yCol and yname are the names of the factor column
-    # if ydata is not a factor
+        colName=xName, yCol = ydata, yname=yName)
     else
-      outputList <- list(gpOut=polyMat,prout=x.pca, colName=colnames(xy))
+      outputList <- list(gpOut=polyMat,prout=x.pca, colName=xName)
     save(outputList,file=saveOutputs)
   }
 }
