@@ -52,6 +52,7 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
     stop("The column specified is out of range")
   if(outliersRemoved > 100)
     stop("This is percentage-based (enter number between 0 to 100)")
+  
 #=======================data preprocessing stage========================
   nrxy <- nrow(xy)
   ncxy <- ncol(xy)
@@ -76,7 +77,7 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
   # nIntervals option
   if (labels) {
     ydata <- xy[,ncxy]
-    yName <- colnames(ydata)
+    yName <- colnames(xy)[ncxy]
     if (is.null(nIntervals) && !is.factor(ydata))
       stop('Y must be a factor for classif.; set nIntervals for regress.')
     if (!is.null(nIntervals)) {
@@ -105,21 +106,37 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
     colnames(xdata) <- c("PC1","PC2")
   }
 
+#===========================removing outliers===========================
   if (outliersRemoved > 0 && outliersRemoved < 100){
+    nrxy <- nrow(xdata)
     # remove outliers by class 
-    if (labels){     if (labels) names(ydata) <- 1:nrow(xdata)}
-    else {
-      # percentage based outlier removal
-      outliersRemoved = floor(outliersRemoved * nrow(xdata) / 100)
-      # calculate mahalanobis distances for each data point
-      distances <- mahalanobis(xdata,colMeans(xdata),var(xdata))
-      # find which row the max distances correspond to
-      rownames(xdata) <- 1:nrow(xdata)
-      names(distances) <- rownames(xdata)
-      sortedDistances <- sort(distances, decreasing=TRUE)
-      outliers <- names(sortedDistances)[0:outliersRemoved]
-      # remove outliers
+    if (labels){
+      names(ydata) <- 1:nrxy
+      partition <- tapply(rownames(xdata), ydata, c)
+      outliers <- c()
+      for (i in 1:length(partition)) {
+        xdatasub <- xdata[rownames(xdata) %in% partition[[i]],]
+        outliersToRemove <- floor(outliersRemoved * nrow(xdatasub) / 100)
+        if (outliersToRemove > 0) {
+          distances <- mahalanobis(xdatasub,colMeans(xdatasub),var(xdatasub))
+          names(distances) <- rownames(xdatasub)
+          sortedDistances <- sort(distances, decreasing=TRUE)
+          outliers <- c(outliers,names(sortedDistances)[1:outliersToRemove])
+        }
+      }
       xdata <- xdata[!rownames(xdata) %in% outliers,]
+      ydata <- ydata[!names(ydata) %in% outliers]
+    } else {
+      # percentage based outlier removal
+      outliersRemoved = floor(outliersRemoved * nrxy / 100)
+      if (outliersRemoved > 0) {
+        distances <- mahalanobis(xdata,colMeans(xdata),var(xdata))
+        names(distances) <- rownames(xdata)
+        sortedDistances <- sort(distances, decreasing=TRUE)
+        outliers <- names(sortedDistances)[1:outliersRemoved]
+        # remove outliers
+        xdata <- xdata[!rownames(xdata) %in% outliers,]
+      }
     }
   }
 
