@@ -21,7 +21,9 @@
 #    labels:  if TRUE, last column is Y for a classification problem;
 #             must be an R factor, unless nIntervals is non-NULL, in
 #             which case Y will be discretized to make labels
+#    yColumn: the column of Y
 #    deg:  degree of polynomial expansion
+#    maxInteractDeg: maximum combined degree for an interaction term
 #    scale:  if TRUE, first call scale() on the X data
 #    nSubSam:  number of rows to randomly select; 0 means get all
 #    nIntervals: in regression case, number of intervals to use for
@@ -40,10 +42,10 @@
 #    alpha: a number between 0 and 1 that can be used to specify transparency
 #           for alpha blending. If alpha is specified ggplot2 will be used to
 #           create the plot
-prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
-   scale=FALSE,nSubSam=0,nIntervals=NULL,
-   outliersRemoved=0,pcaMethod="prcomp",bigData=FALSE,
-   saveOutputs="lastPrVisOut",cex=0.5, alpha=0)
+prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,maxInteractDeg=deg,
+                  scale=FALSE,nSubSam=0,nIntervals=NULL,
+                  outliersRemoved=0,pcaMethod="prcomp",bigData=FALSE,
+                  saveOutputs="lastPrVisOut",cex=0.5, alpha=0)
 {
   # safety check
   if (!pcaMethod %in% c('prcomp','RSpectra'))
@@ -52,18 +54,18 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
     stop("The column specified is out of range")
   if(outliersRemoved > 100)
     stop("This is percentage-based (enter number between 0 to 100)")
-  
+
 #=======================data preprocessing stage========================
   nrxy <- nrow(xy)
   ncxy <- ncol(xy)
   # yColumn option
   if (labels && yColumn != ncxy) {
-    # swapping values 
+    # swapping values
     xy[,c(yColumn, ncxy)] <- xy[,c(ncxy, yColumn)]
-    # swapping column names 
+    # swapping column names
     colnames(xy)[c(yColumn, ncxy)] <- colnames(xy)[c(ncxy, yColumn)]
   }
-  # scale option 
+  # scale option
   rns <- row.names(xy)
   if (scale) {
     if (labels) {
@@ -71,7 +73,7 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
     } else xy <- scale(xy)
     row.names(xy) <- rns
   }
-  # nSubSam option 
+  # nSubSam option
   if (nSubSam < nrxy && nSubSam > 0)
     xy <- xy[sample(1:nrxy,nSubSam),]
   # nIntervals option
@@ -90,50 +92,59 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
   } else xdata <- xy
   xName <- colnames(xdata)
   remove(xy)
+  # after the preprocessing stage, ydata is a factor vector,
+  # xdata may be a dataframe with or without factor column(s)
+  # if xy is a dataframe
 
 #=====================polynomial expansion + PCA========================
-  polyMat <- as.matrix(getPoly(xdata, deg)$xdata)
-
-  if (pcaMethod == "prcomp") {
-    x.pca <- prcomp(polyMat,center=TRUE)
-    xdata <- x.pca$x[,1:2]
-  } else {
-    require(RSpectra)
-    x.cov <- cov(polyMat)
-    x.eig <- eigs(x.cov,2)
-    x.pca <- x.eig
-    xdata <- as.matrix(polyMat) %*% x.eig$vectors[,1:2]
+  if (bigData) {
+    polyMat <- polyGet_big(xdata, deg, maxInteractDeg)
+    xdata <- predict(big_randomSVD(polyMat, k=2, ncores = nb_cores()))
     colnames(xdata) <- c("PC1","PC2")
+  } else{
+    # $xdata should always be a matrix
+    polyMat <- getPoly(xdata, deg, maxInteractDeg)$xdata
+    if (pcaMethod == "prcomp") {
+      x.pca <- prcomp(polyMat,center=TRUE)
+      xdata <- x.pca$x[,1:2]
+    } else {
+      require(RSpectra)
+      x.cov <- cov(polyMat)
+      x.eig <- eigs(x.cov,2)
+      x.pca <- x.eig
+      xdata <- as.matrix(polyMat) %*% x.eig$vectors[,1:2]
+      colnames(xdata) <- c("PC1","PC2")
+    }
   }
 
 #===========================removing outliers===========================
   if (outliersRemoved > 0 && outliersRemoved < 100){
     nrxy <- nrow(xdata)
-    # remove outliers by class 
+    row.names(xdata) <- 1:nrxy 
+    removeOutliers <- function(data, num) {
+      distances <- mahalanobis(data,colMeans(data),var(data))
+      names(distances) <- rownames(data)
+      sortedDistances <- sort(distances, decreasing=TRUE)
+      outliers <- names(sortedDistances)[1:num]
+    }
+    # remove outliers by class
     if (labels){
       names(ydata) <- 1:nrxy
       partition <- tapply(rownames(xdata), ydata, c)
-      outliers <- c()
       for (i in 1:length(partition)) {
         xdatasub <- xdata[rownames(xdata) %in% partition[[i]],]
         outliersToRemove <- floor(outliersRemoved * nrow(xdatasub) / 100)
         if (outliersToRemove > 0) {
-          distances <- mahalanobis(xdatasub,colMeans(xdatasub),var(xdatasub))
-          names(distances) <- rownames(xdatasub)
-          sortedDistances <- sort(distances, decreasing=TRUE)
-          outliers <- c(outliers,names(sortedDistances)[1:outliersToRemove])
+          outliers <- removeOutliers(xdatasub, outliersToRemove)
+          xdata <- xdata[!rownames(xdata) %in% outliers,]
+          ydata <- ydata[!names(ydata) %in% outliers]
         }
       }
-      xdata <- xdata[!rownames(xdata) %in% outliers,]
-      ydata <- ydata[!names(ydata) %in% outliers]
     } else {
       # percentage based outlier removal
       outliersRemoved = floor(outliersRemoved * nrxy / 100)
       if (outliersRemoved > 0) {
-        distances <- mahalanobis(xdata,colMeans(xdata),var(xdata))
-        names(distances) <- rownames(xdata)
-        sortedDistances <- sort(distances, decreasing=TRUE)
-        outliers <- names(sortedDistances)[1:outliersRemoved]
+        outliers <- removeOutliers(xdata, outliersRemoved)
         # remove outliers
         xdata <- xdata[!rownames(xdata) %in% outliers,]
       }
@@ -159,10 +170,10 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,
       plot(xdata, pch=15, cex=cex)
     }
   }
-  if (saveOutputs != ""){
+  if (saveOutputs != "" && !bigData){ # temporaily disable saving for bigData
     if (labels)
       outputList <- list(gpOut=polyMat,prout=x.pca,
-        colName=xName, yCol = ydata, yname=yName)
+                         colName=xName, yCol = ydata, yname=yName)
     else
       outputList <- list(gpOut=polyMat,prout=x.pca, colName=xName)
     save(outputList,file=saveOutputs)
