@@ -1,0 +1,7 @@
+
+The 'spam' dataset from the 'kernlab' package.
+
+Two classes, spam and nospam, clearly separate in prVis, poor in UMAP;
+Rtsne won't run, complaining of duplicate rows.
+
+
