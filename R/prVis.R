@@ -206,7 +206,7 @@ addRowNums <- function(np=0,area=c(0,1,0,1),savedPrVisOut="lastPrVisOut")
       as.character(1:nrow(outputList$prout$x))
   pcax <- outputList$prout$x[,1:2]
 
-  if(identical(area, c(0,1,0,1))){
+  if(!identical(area, c(0,1,0,1))){
     # get boundaries of graph
     xMin <- min(outputList$prout$x[,1])
     xMax <- max(outputList$prout$x[,1])
@@ -244,7 +244,7 @@ addRowNums <- function(np=0,area=c(0,1,0,1),savedPrVisOut="lastPrVisOut")
     rn <- rowNames[i]
     print(sorted[i])
     coords <- pcax[rn,]
-    text(coords[1],coords[2],rn)
+    text(coords[1],coords[2],rn, cex = 0.7, col = "violetred2")
   }
 }
 
