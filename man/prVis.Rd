@@ -93,15 +93,14 @@ regarding the y column in \code{colName}, \code{yCol}, or \code{yname}.
 
 \examples{
 
-getPE()  # prgeng data, included in pkg
-# may want to predict wage; look at some predictors
-pe1 <- pe[,c(1,2,6:16)]
-z <- prVis(pe1,nSubSam=2000,labels=FALSE)
+data(peFactors)  # prgeng data, included in pkg
+pe1 <- peFactors[,c(1,8,9)] 
+z <- prVis(pe1,nSubSam=5000,labels=FALSE)
 # get a bunch of streaks; why?
 # call addRowNums() (not shown); discover that points on the same streak
 # tend to have same combination of sex, education and occupation; moving
-# along a streak mainly consists of variying age
-colorCode(exps=c("sex==1*occ3==1", "sex==1* occ2==1"))
+# along a streak mainly consists of variying age; call colorCode() (not
+# shown) to explore
 print('see data/SwissRoll for another example')
 
 }
