@@ -198,7 +198,8 @@ prVis <- function(xy,labels=FALSE,yColumn = ncol (xy), deg=2,maxInteractDeg=deg,
 #             of the graph. [0,0.5,0.5,1] specifies upper-left quadrant. x_start
 #             must be less than x_finish and y_start must be less than y_finish
 
-addRowNums <- function(np=0,area=c(0,1,0,1),savedPrVisOut="lastPrVisOut")
+addRowNums <- 
+   function(np=0,area=c(0,1,0,1),savedPrVisOut="lastPrVisOut",cex=0.9)
 {
   load(savedPrVisOut)
   if(is.null(row.names(outputList$prout$x[,1:2])))
@@ -244,7 +245,7 @@ addRowNums <- function(np=0,area=c(0,1,0,1),savedPrVisOut="lastPrVisOut")
     rn <- rowNames[i]
     print(sorted[i])
     coords <- pcax[rn,]
-    text(coords[1],coords[2],rn, cex = 0.7, col = "violetred2")
+    text(coords[1],coords[2],rn, cex, col = "red")
   }
 }
 
