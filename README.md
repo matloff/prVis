@@ -44,7 +44,7 @@ but then undergoes a strongly nonlinear transformation into three
 dimensions.  The question for any nonlinear visualization tool is then,
 can the tool discern the four-component origin of the data?
 
-The preprocessed data can be downloaded [here](https://github.com/matloff/prVis/blob/master/inst/data/SwissRoll/Surendran.txt)
+The preprocessed data can be downloaded [here](https://github.com/matloff/prVis/blob/master/data/SwissRoll/Surendran.txt)
 
 ``` r
 # Read in the data
@@ -55,7 +55,7 @@ sw[,4] <- as.factor(sw[,4])
 # We "forget" the labels for each row by excluding the label columnm and plot it "
 prVis(sw[,-4],labels=F)
 ```
-![](https://github.com/matloff/prVis/blob/master/inst/data/SwissRoll/SWwithnoY.png)
+![](https://github.com/matloff/prVis/blob/master/data/SwissRoll/SWwithnoY.png)
 ```r
 #In the above plot, it suggests 4 different components
 ```
@@ -64,7 +64,7 @@ prVis(sw[,-4],labels=F)
 # plot it to see how many components(labels) are actually in the data set
 prVis(sw,labels=T)
 ```
-![](https://github.com/matloff/prVis/blob/master/inst/data/SwissRoll/SWwithY.png)
+![](https://github.com/matloff/prVis/blob/master/data/SwissRoll/SWwithY.png)
 ```r
 And yeah, the result (indicated by the different colorings) corresponds
 to our prediction before
@@ -86,7 +86,7 @@ axis(side=1)
 # why that happens (Note: the data set is not artificial, we do not know any
 # grouping before hand)
 ```
-![](https://github.com/matloff/prVis/blob/master/inst/data/PE/pe.png)
+![](https://github.com/matloff/prVis/blob/master/data/PE/pe.png)
 ```r
 # To investigate that question, we call another utility function in the package:
 addRowNums(16,z)
@@ -111,7 +111,7 @@ addRowNums(16,z)
 [1] 17831
 [1] 18066
 ```
-![](https://github.com/matloff/prVis/blob/master/inst/data/PE/peNum.png)
+![](https://github.com/matloff/prVis/blob/master/data/PE/peNum.png)
 
 The plot above, along with the output row numbers, shows that rows 7183 and 14922 seem to be on the same streak.
 Let's dive in to it.
